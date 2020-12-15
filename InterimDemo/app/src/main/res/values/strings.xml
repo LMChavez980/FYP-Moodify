@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MoodifyDemo</string>
+    <string name="playlist_name">Playlist Name</string>
 </resources>
