@@ -20,6 +20,15 @@ import com.spotify.protocol.types.Track;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Pager;
+import kaaes.spotify.webapi.android.models.PlaylistSimple;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "4110566732ad4c08b6f0e6c5768e552d";
@@ -30,37 +39,58 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mExPlaylistRecyclerView;
     private ExPlaylistRecyclerAdapter mExPlaylistAdapter;
+    private SpotifyApi api = new SpotifyApi();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String token = getIntent().getStringExtra("TOKEN");
+        api.setAccessToken(token);
+
         mExPlaylistRecyclerView = findViewById(R.id.playlistRecyclerView);
 
-        mExPlaylistAdapter = new ExPlaylistRecyclerAdapter(this, new ArrayList< Playlist >());
-        mExPlaylistRecyclerView.setAdapter(mExPlaylistAdapter);
+        //mExPlaylistAdapter = new ExPlaylistRecyclerAdapter(this, new ArrayList<PlaylistSimple>());
+        //mExPlaylistRecyclerView.setAdapter(mExPlaylistAdapter);
 
         mExPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mExPlaylistAdapter.addActionCallback(new ExPlaylistRecyclerAdapter.ActionCallback() {
+        SpotifyService spotify = api.getService();
+
+        spotify.getMyPlaylists(new Callback<Pager<PlaylistSimple>>() {
             @Override
-            public void onClickListener(Playlist playlist) {
-                //Toast.makeText(MainActivity.this, playlist.getId(), Toast.LENGTH_LONG).show();
-                mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:3cejj3mmTgiLrvNCr5qz83");
+            public void success(Pager<PlaylistSimple> playlistSimplePager, Response response) {
+                List<PlaylistSimple> myPlaylists = playlistSimplePager.items;
+                Log.i("MainActivity", "My playlists allocated");
+                mExPlaylistAdapter = new ExPlaylistRecyclerAdapter(MainActivity.this, myPlaylists);
+                mExPlaylistRecyclerView.setAdapter(mExPlaylistAdapter);
 
-                mSpotifyAppRemote.getPlayerApi()
-                        .subscribeToPlayerState()
-                        .setEventCallback(playerState -> {
-                            final Track track = playerState.track;
-                            if (track != null) {
-                                Log.d("MainActivity", track.name + " by " + track.artist.name);
-                            }
-                        });
+                mExPlaylistAdapter.addActionCallback(new ExPlaylistRecyclerAdapter.ActionCallback() {
+                    @Override
+                    public void onClickListener(PlaylistSimple playlist) {
+                        Toast.makeText(MainActivity.this, playlist.id, Toast.LENGTH_LONG).show();
+                        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:"+playlist.id);
+
+                        mSpotifyAppRemote.getPlayerApi()
+                                .subscribeToPlayerState()
+                                .setEventCallback(playerState -> {
+                                    final Track track = playerState.track;
+                                    if (track != null) {
+                                        Log.d("MainActivity", track.name + " by " + track.artist.name);
+                                    }
+                                });
 
 
+                    }
+
+                });
             }
 
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e("MainActivity", error.getMessage());
+            }
         });
     }
 

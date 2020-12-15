@@ -29,6 +29,11 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'com.spotify.android:auth:1.2.3'
@@ -37,6 +42,7 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
     implementation 'com.android.volley:volley:1.1.1'
     testImplementation 'junit:junit:4.12'
     implementation project(':spotify-app-remote')
