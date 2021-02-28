@@ -24,12 +24,12 @@ genius.remove_section_headers = True
 genius.retries = 3
 genius.timeout = 10
 
-song = genius.search_song(title="I Luv Ya", artist="Young Jeezy & Busta Rhymes")
+song = genius.search_song(title="Troublemaker (feat. Flo Rida)", artist="Olly Murs")
 
 if song is not None:
-    print(fuzz.ratio("Young Jeezy & Busta Rhymes", song.artist))
+    print(fuzz.partial_ratio("Olly Murs".lower(), song.artist.lower()))
     print(song.artist)
-    print(fuzz.ratio("I Luv Ya", song.title))
+    print(fuzz.partial_ratio("Troublemaker (feat. Flo Rida)".lower(), song.title.lower()))
     print(song.title)
     #print(song.lyrics)
 else:
@@ -38,10 +38,13 @@ else:
 google = 'google'
 duckgo = 'duckduckgo'
 
-azlyrics = AZlyrics(search_engine=duckgo)
+azlyrics = AZlyrics(search_engine=google)
 
-azlyrics.title = "Wu-Tang Clan Ain't Nuthing Ta F' Wit"
-azlyrics.artist = "Wu-Tang Clan"
+#azlyrics.title = "i don't want to watch the world end with someone else"
+#azlyrics.artist = "Clinton Kane"
+
+azlyrics.title = "Tango"
+azlyrics.artist = "Pugfish"
 
 lyrics_az = azlyrics.getLyrics(save=False)
 

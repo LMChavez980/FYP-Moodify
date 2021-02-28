@@ -16,11 +16,11 @@ bins = {'danceability': ['<= minimum', pd.Interval(0.0768, 0.384), pd.Interval(0
 CLIENT_ID = "51891ef3095849e98336d9d0c83c05e9"
 CLIENT_SECRET = "d833852dd80b4117b0e020e480f142c6"
 
-client_credential_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
-sp = spotipy.Spotify(client_credentials_manager=client_credential_manager)
-
 
 def get_tracks(playlist_ids):
+    client_credential_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+    sp = spotipy.Spotify(client_credentials_manager=client_credential_manager)
+
     sp_pl_tracks = []
 
     for pl_id in playlist_ids:
@@ -53,6 +53,9 @@ def get_tracks(playlist_ids):
 
 
 def get_audio_data(sp_tracks):
+    client_credential_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+    sp = spotipy.Spotify(client_credentials_manager=client_credential_manager)
+
     audio_ft = ["danceability", "energy", "key", "loudness", "mode", "speechiness", "acousticness", "instrumentalness",
                 "liveness", "valence", "tempo"]
 
@@ -93,8 +96,8 @@ def get_audio_data(sp_tracks):
 
 #sp_playlists = ["58gtWgHQ99PHtAkCK2dpYt", "3cejj3mmTgiLrvNCr5qz83", "4yMwcuj91F6OJBvK86hMHu"]
 #sp_playlists = ["58gtWgHQ99PHtAkCK2dpYt"]
-spotify_pl_tks = get_tracks(sp_playlists)
-spotify_pl_tks = get_audio_data(spotify_pl_tks)
+#spotify_pl_tks = get_tracks(sp_playlists)
+#spotify_pl_tks = get_audio_data(spotify_pl_tks)
 
 #for key in spotify_pl_tks.keys():
 #    print(spotify_pl_tks[key], "\n", len(spotify_pl_tks[key]))
