@@ -1,4 +1,4 @@
-package com.fypmood.interim;
+package com.fypmood.moodify;
 
 import android.content.Context;
 

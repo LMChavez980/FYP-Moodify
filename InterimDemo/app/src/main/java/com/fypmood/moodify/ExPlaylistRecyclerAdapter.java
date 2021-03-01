@@ -1,16 +1,12 @@
-package com.fypmood.interim;
+package com.fypmood.moodify;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.fypmood.interim.models.Playlist;
 
 import java.util.List;
 

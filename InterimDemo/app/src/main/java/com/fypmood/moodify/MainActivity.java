@@ -1,4 +1,4 @@
-package com.fypmood.interim;
+package com.fypmood.moodify;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -6,20 +6,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.fypmood.interim.models.Playlist;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 
-import com.spotify.protocol.client.Subscription;
-import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
-import com.spotify.sdk.android.auth.AuthorizationRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -32,7 +25,7 @@ import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "4110566732ad4c08b6f0e6c5768e552d";
-    private static final String REDIRECT_URI = "com.fypmood.interim://callback";
+    private static final String REDIRECT_URI = "com.fypmood.moodify://callback";
     private static final int REQUEST_CODE = 1337;
     private SpotifyAppRemote mSpotifyAppRemote;
 

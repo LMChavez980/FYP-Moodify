@@ -1,4 +1,4 @@
-package com.fypmood.interim.models;
+package com.fypmood.moodify.models;
 
 public class Playlist
 {
