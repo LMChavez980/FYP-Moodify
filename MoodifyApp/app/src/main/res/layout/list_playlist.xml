@@ -8,8 +8,9 @@
     android:focusable="true"
     android:orientation="vertical">
 
-    <TextView
+    <CheckedTextView
         android:id="@+id/list_item"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         style="@style/playlist_list_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,13 +23,5 @@
         android:layout_height="1dp"
         android:layout_below="@id/list_item"
         android:background="?attr/dividerHorizontal"/>
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="22dp" />
 
 </RelativeLayout>

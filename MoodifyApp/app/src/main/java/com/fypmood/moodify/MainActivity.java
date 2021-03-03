@@ -45,9 +45,6 @@ public class MainActivity extends AppCompatActivity {
         mExPlaylistRecyclerView = findViewById(R.id.playlistRecyclerView);
         mExPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //mExPlaylistAdapter = new ExPlaylistRecyclerAdapter(this, new ArrayList<PlaylistSimple>());
-        //mExPlaylistRecyclerView.setAdapter(mExPlaylistAdapter);
-
         SpotifyService spotify = api.getService();
 
         spotify.getMyPlaylists(new Callback<Pager<PlaylistSimple>>() {
@@ -62,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClickListener(PlaylistSimple playlist) {
                         //Toast.makeText(MainActivity.this, playlist.id, Toast.LENGTH_LONG).show();
-                        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:"+playlist.id);
+                        /*mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:"+playlist.id);
 
                         mSpotifyAppRemote.getPlayerApi()
                                 .subscribeToPlayerState()
@@ -72,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                                         Log.d("MainActivity", track.name + " by " + track.artist.name);
                                     }
                                 });
+                         */
 
 
                     }

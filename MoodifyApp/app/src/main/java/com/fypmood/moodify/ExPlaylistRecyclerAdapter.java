@@ -1,10 +1,12 @@
 package com.fypmood.moodify;
 
 import android.content.Context;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.CheckedTextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +19,7 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
     private List<PlaylistSimple> mPlaylistList;
     private Context context;
     private ActionCallback mActionCallback;
+    private SparseBooleanArray checkBoxState = new SparseBooleanArray();
 
 
     interface ActionCallback
@@ -45,12 +48,12 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
     public int getItemCount() { return mPlaylistList.size();}
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private TextView mExPlaylistName;
+        private CheckedTextView mExistingPlaylist;
 
         ViewHolder(View itemView){
             super(itemView);
             itemView.setOnClickListener(this);
-            mExPlaylistName = itemView.findViewById(R.id.list_item);
+            mExistingPlaylist = itemView.findViewById(R.id.list_item);
         }
 
         void bindData(int position)
@@ -58,8 +61,18 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
             PlaylistSimple playlist = mPlaylistList.get(position);
 
             String plName = playlist.name;
-            mExPlaylistName.setText(plName);
+            mExistingPlaylist.setText(plName+" "+position);
 
+            if(!checkBoxState.get(position, false))
+            {
+                Log.i("Adapter", "Empty"+position+" "+checkBoxState.toString());
+                mExistingPlaylist.setChecked(false);
+            }
+            else
+            {
+                Log.i("Adapter", "Checked"+position+" "+checkBoxState.toString());
+                mExistingPlaylist.setChecked(true);
+            }
         }
 
         @Override
@@ -69,6 +82,19 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
             {
                 mActionCallback.onClickListener(mPlaylistList.get(getAdapterPosition()));
             }
+
+            if(!checkBoxState.get(getAdapterPosition(), false))
+            {
+                mExistingPlaylist.setChecked(true);
+                checkBoxState.put(getAdapterPosition(),true);
+            }
+            else
+            {
+                mExistingPlaylist.setChecked(false);
+                checkBoxState.put(getAdapterPosition(), false);
+            }
+            Log.i("CheckboxState", checkBoxState.toString());
+
         }
     }
 
