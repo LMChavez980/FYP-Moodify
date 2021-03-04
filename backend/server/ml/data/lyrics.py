@@ -43,7 +43,7 @@ def genius_lyrics(song_title, song_artist):
 
 def az_lyrics(song_title, song_artist):
     print("AZ Lyrics")
-    azlyrics = AZlyrics(search_engine='duckduckgo')
+    azlyrics = AZlyrics(search_engine='duckduckgo', accuracy=0.6)
     azlyrics.title = song_title
     azlyrics.artist = song_artist
 
@@ -86,8 +86,8 @@ def get_lyrics(tracks_dict):
 
     try:
         for i in range(len(tracks_dict['id'])):
-            track_name = tracks_dict['name'][i]
-            track_artist = tracks_dict['artists'][i]
+            track_name = tracks_dict['name'][i].strip()
+            track_artist = tracks_dict['artists'][i].strip()
             print("Search:", track_name, "-", track_artist)
 
             # Genius
@@ -113,7 +113,6 @@ def get_lyrics(tracks_dict):
                     else:
                         print("Could not find song")
                         lyrics_list.append("")
-
     except (HTTPError, Timeout) as e:
         print(e.errno)
         print(e.arg[0])

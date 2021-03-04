@@ -1,17 +1,6 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-import pandas as pd
 
-bins = {'danceability': ['<= minimum', pd.Interval(0.0768, 0.384), pd.Interval(0.384, 0.506),
-                         pd.Interval(0.506, 0.628), pd.Interval(0.628, 0.962), '> maximum'],
-        'energy': ['<= minimum', pd.Interval(0.00302, 0.447), pd.Interval(0.447, 0.696),
-                   pd.Interval(0.696, 0.879), pd.Interval(0.879, 0.999), '> maximum'],
-        'loudness': ['<= minimum', pd.Interval(-34.317, -10.824), pd.Interval(-10.824, -7.541),
-                     pd.Interval(-7.541, -5.296), pd.Interval(-5.296, -0.938), '> maximum'],
-        'valence': ['<= minimum', pd.Interval(0.0314, 0.226), pd.Interval(0.226, 0.426),
-                    pd.Interval(0.426, 0.664), pd.Interval(0.664, 0.982), '> maximum'],
-        'tempo': ['<= minimum', pd.Interval(36.958000000000006, 99.387), pd.Interval(99.387, 119.737),
-                  pd.Interval(119.737, 140.05), pd.Interval(140.05, 217.396), '> maximum']}
 
 CLIENT_ID = "51891ef3095849e98336d9d0c83c05e9"
 CLIENT_SECRET = "d833852dd80b4117b0e020e480f142c6"
