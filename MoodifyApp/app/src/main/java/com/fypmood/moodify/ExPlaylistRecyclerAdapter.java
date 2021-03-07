@@ -6,6 +6,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +32,10 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
     {
         this.context = context;
         this.mPlaylistList = mPlaylistList;
-
+        PlaylistSimple first = new PlaylistSimple();
+        first.id = "Liked";
+        first.name = "Liked Tracks";
+        this.mPlaylistList.add(0, first);
     }
 
     @Override
@@ -48,12 +52,12 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
     public int getItemCount() { return mPlaylistList.size();}
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private CheckedTextView mExistingPlaylist;
+        private CheckBox mExistingPlaylist;
 
         ViewHolder(View itemView){
             super(itemView);
-            itemView.setOnClickListener(this);
             mExistingPlaylist = itemView.findViewById(R.id.list_item);
+            mExistingPlaylist.setOnClickListener(this);
         }
 
         void bindData(int position)
@@ -61,11 +65,11 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
             PlaylistSimple playlist = mPlaylistList.get(position);
 
             String plName = playlist.name;
-            mExistingPlaylist.setText(plName+" "+position);
+            mExistingPlaylist.setText(plName);
 
             if(!checkBoxState.get(position, false))
             {
-                Log.i("Adapter", "Empty"+position+" "+checkBoxState.toString());
+                Log.i("Adapter", "Empty "+position+" "+checkBoxState.toString());
                 mExistingPlaylist.setChecked(false);
             }
             else

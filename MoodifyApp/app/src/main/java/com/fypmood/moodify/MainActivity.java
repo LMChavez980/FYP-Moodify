@@ -78,27 +78,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MainActivity", "My playlists allocated");
                 mExPlaylistAdapter = new ExPlaylistRecyclerAdapter(MainActivity.this, myPlaylists);
                 mExPlaylistRecyclerView.setAdapter(mExPlaylistAdapter);
-
-                mExPlaylistAdapter.addActionCallback(new ExPlaylistRecyclerAdapter.ActionCallback() {
-                    @Override
-                    public void onClickListener(PlaylistSimple playlist) {
-                        //Toast.makeText(MainActivity.this, playlist.id, Toast.LENGTH_LONG).show();
-                        /*mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:"+playlist.id);
-
-                        mSpotifyAppRemote.getPlayerApi()
-                                .subscribeToPlayerState()
-                                .setEventCallback(playerState -> {
-                                    final Track track = playerState.track;
-                                    if (track != null) {
-                                        Log.d("MainActivity", track.name + " by " + track.artist.name);
-                                    }
-                                });
-                         */
-
-
-                    }
-
-                });
             }
 
             @Override

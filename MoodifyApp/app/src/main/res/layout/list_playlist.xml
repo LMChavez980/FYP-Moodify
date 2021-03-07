@@ -8,9 +8,8 @@
     android:focusable="true"
     android:orientation="vertical">
 
-    <CheckedTextView
+    <CheckBox
         android:id="@+id/list_item"
-        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         style="@style/playlist_list_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
