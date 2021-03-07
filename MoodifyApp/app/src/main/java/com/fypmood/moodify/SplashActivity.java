@@ -20,7 +20,7 @@ public class SplashActivity extends AppCompatActivity
     private static final int REQUEST_CODE = 1337;
     private static final String CLIENT_ID = "4110566732ad4c08b6f0e6c5768e552d";
     private static final String REDIRECT_URI = "com.fypmood.moodify://callback";
-    private static final String SCOPES = "playlist-read-private";
+    private static final String SCOPES = "playlist-read-private, playlist-modify-public, playlist-modify-private";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){

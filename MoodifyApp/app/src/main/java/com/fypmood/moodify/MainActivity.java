@@ -13,11 +13,14 @@ import com.spotify.android.appremote.api.SpotifyAppRemote;
 
 import com.spotify.protocol.types.Track;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Pager;
+import kaaes.spotify.webapi.android.models.Playlist;
 import kaaes.spotify.webapi.android.models.PlaylistSimple;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -46,6 +49,27 @@ public class MainActivity extends AppCompatActivity {
         mExPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         SpotifyService spotify = api.getService();
+
+        String playlist_name = "Test Create 0";
+        String des = "";
+
+        Map<String, Object> create_body = new HashMap<String, Object>();
+        create_body.put("name", playlist_name);
+        create_body.put("description", des);
+        create_body.put("public", false);
+
+        /*spotify.createPlaylist("lmchavez980", create_body, new Callback<Playlist>() {
+            @Override
+            public void success(Playlist playlist, Response response) {
+                Log.i("MainActivity", "Yeet");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.i("MainActivity", "Noppers");
+
+            }
+        });*/
 
         spotify.getMyPlaylists(new Callback<Pager<PlaylistSimple>>() {
             @Override

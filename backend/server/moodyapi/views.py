@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import views, status
-from ml.data import song_data, lyrics
+from ml.data import spotify, lyrics
 from ml.classifiers import lyrics_sentiment, music_mood
 import pandas as pd
 
@@ -23,10 +23,10 @@ class AnalyzeView(views.APIView):
         pl_ids = request.data.get('playlist_ids')
 
         # Get tracks of playlist
-        pl_tracks = song_data.get_tracks(pl_ids)
+        pl_tracks = spotify.get_tracks(pl_ids)
 
         # Get audio features
-        pl_tracks = song_data.get_audio_data(pl_tracks)
+        pl_tracks = spotify.get_audio_data(pl_tracks)
 
         # Get lyrics
         pl_tracks = lyrics.get_lyrics(pl_tracks)
@@ -60,6 +60,8 @@ class AnalyzeView(views.APIView):
         pl_tracks_df["music mood"] = musicmood.mood(pl_tracks_df[test_features])
 
         print(pl_tracks_df[["name", "artists", "lyrics sentiment", "music mood"]])
+
+
 
         return_data = {
             "error": "0",
