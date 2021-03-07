@@ -102,6 +102,10 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
         }
     }
 
+    SparseBooleanArray getCheckBoxState() { return checkBoxState; }
+
+    List<PlaylistSimple> getmPlaylistList(){ return mPlaylistList; };
+
     void addActionCallback(ActionCallback actionCallback) { mActionCallback = actionCallback; }
 
 }

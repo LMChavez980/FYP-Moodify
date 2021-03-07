@@ -53,7 +53,7 @@ public class SplashActivity extends AppCompatActivity
                     //successful
                     String token = response.getAccessToken();
                     Log.d("SPLASH", "AUTH TOKEN ACQUIRED");
-                    Intent intent_main = new Intent(SplashActivity.this, MainActivity.class);
+                    Intent intent_main = new Intent(SplashActivity.this, AddToPool.class);
                     intent_main.putExtra("TOKEN", token);
                     startActivity(intent_main);
                     break;
