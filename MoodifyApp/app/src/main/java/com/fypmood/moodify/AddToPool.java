@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -26,6 +27,7 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Pager;
 import kaaes.spotify.webapi.android.models.PlaylistSimple;
+import kaaes.spotify.webapi.android.models.UserPrivate;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -35,6 +37,7 @@ public class AddToPool extends AppCompatActivity {
     private static final String REDIRECT_URI = "com.fypmood.moodify://callback";
     private static final int REQUEST_CODE = 1337;
     private SpotifyAppRemote mSpotifyAppRemote;
+    //private SharedPreferences mSharedPreferences;
 
 
     private RecyclerView mExPlaylistRecyclerView;
@@ -44,7 +47,7 @@ public class AddToPool extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_pool);
 
         String token = getIntent().getStringExtra("TOKEN");
         api.setAccessToken(token);
@@ -53,6 +56,8 @@ public class AddToPool extends AppCompatActivity {
         mExPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         SpotifyService spotify = api.getService();
+
+        //UserPrivate currentUser = new UserPrivate();
 
         String playlist_name = "Test Create 0";
         String des = "";
@@ -65,12 +70,12 @@ public class AddToPool extends AppCompatActivity {
         /*spotify.createPlaylist("lmchavez980", create_body, new Callback<Playlist>() {
             @Override
             public void success(Playlist playlist, Response response) {
-                Log.i("MainActivity", "Yeet");
+                Log.i("ATP", "Yeet");
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.i("MainActivity", "Noppers");
+                Log.i("ATP", "Noppers");
 
             }
         });*/
@@ -79,7 +84,7 @@ public class AddToPool extends AppCompatActivity {
             @Override
             public void success(Pager<PlaylistSimple> playlistSimplePager, Response response) {
                 List<PlaylistSimple> myPlaylists = playlistSimplePager.items;
-                Log.i("MainActivity", "My playlists allocated");
+                Log.i("ATP", "My playlists allocated");
                 mExPlaylistAdapter = new ExPlaylistRecyclerAdapter(AddToPool.this, myPlaylists);
                 mExPlaylistRecyclerView.setAdapter(mExPlaylistAdapter);
 
@@ -107,7 +112,7 @@ public class AddToPool extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("MainActivity", error.getMessage());
+                Log.e("ATP", error.getMessage());
             }
         });
 
@@ -127,13 +132,13 @@ public class AddToPool extends AppCompatActivity {
             @Override
             public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                 mSpotifyAppRemote = spotifyAppRemote;
-                Log.d("MainActivity", "Connected! WAHOO WAHOO!");
+                Log.d("ATP", "Connected! WAHOO WAHOO!");
                 //connected();
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e("MainActivity", throwable.getMessage(), throwable);
+                Log.e("ATP", throwable.getMessage(), throwable);
             }
         });
     }
@@ -147,7 +152,7 @@ public class AddToPool extends AppCompatActivity {
                 .setEventCallback(playerState -> {
                     final Track track = playerState.track;
                     if (track != null) {
-                        Log.d("MainActivity", track.name + " by " + track.artist.name);
+                        Log.d("ATP", track.name + " by " + track.artist.name);
                     }
                 });
 

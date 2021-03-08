@@ -20,6 +20,8 @@
         </activity>
         <activity android:name="com.fypmood.moodify.AddToPool">
         </activity>
+        <activity android:name="com.fypmood.moodify.MainActivity">
+        </activity>
     </application>
 
 </manifest>

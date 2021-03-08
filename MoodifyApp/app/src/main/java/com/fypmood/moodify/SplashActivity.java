@@ -1,6 +1,7 @@
 package com.fypmood.moodify;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -13,6 +14,13 @@ import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.UserPrivate;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 public class SplashActivity extends AppCompatActivity
 {
     private RequestQueue queue;
@@ -21,6 +29,11 @@ public class SplashActivity extends AppCompatActivity
     private static final String CLIENT_ID = "4110566732ad4c08b6f0e6c5768e552d";
     private static final String REDIRECT_URI = "com.fypmood.moodify://callback";
     private static final String SCOPES = "playlist-read-private, playlist-modify-public, playlist-modify-private";
+    private SpotifyApi api = new SpotifyApi();
+    private SpotifyService service;
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor editor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -53,8 +66,12 @@ public class SplashActivity extends AppCompatActivity
                     //successful
                     String token = response.getAccessToken();
                     Log.d("SPLASH", "AUTH TOKEN ACQUIRED");
-                    Intent intent_main = new Intent(SplashActivity.this, AddToPool.class);
-                    intent_main.putExtra("TOKEN", token);
+                    mSharedPreferences = getSharedPreferences("SPOTIFY", 0);
+                    editor = mSharedPreferences.edit();
+                    editor.putString("TOKEN", token);
+                    getUserId(token);
+                    editor.commit();
+                    Intent intent_main = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(intent_main);
                     break;
 
@@ -68,6 +85,23 @@ public class SplashActivity extends AppCompatActivity
             }
         }
 
+    }
+
+    public void getUserId(String token){
+        api.setAccessToken(token);
+        service = api.getService();
+        service.getMe(new Callback<UserPrivate>() {
+            @Override
+            public void success(UserPrivate userPrivate, Response response) {
+                Log.d("SPLASH", "current user id: ".concat(userPrivate.id));
+                editor.putString("USERID", userPrivate.id);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d("SPLASH", "Unable to get current user id");
+            }
+        });
     }
 
 
