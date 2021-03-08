@@ -1,6 +1,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from requests.exceptions import HTTPError, Timeout
+from spotipy.exceptions import SpotifyException
 
 
 CLIENT_ID = "51891ef3095849e98336d9d0c83c05e9"
@@ -63,9 +64,9 @@ def get_audio_data(sp_tracks):
         loudness.append(result[0]['loudness'])
         mode.append(result[0]['mode'])
         speechiness.append(result[0]['speechiness'])
-        acousticness.append(result[0]['acousticness'])
+        #acousticness.append(result[0]['acousticness'])
         instrumentalness.append(result[0]['instrumentalness'])
-        liveness.append(result[0]['liveness'])
+        #liveness.append(result[0]['liveness'])
         valence.append(result[0]['valence'])
         tempo.append(result[0]['tempo'])
 
@@ -75,9 +76,9 @@ def get_audio_data(sp_tracks):
     sp_tracks['loudness'] = loudness
     sp_tracks['mode'] = mode
     sp_tracks['speechiness'] = speechiness
-    sp_tracks['acousticness'] = acousticness
+    #sp_tracks['acousticness'] = acousticness
     sp_tracks['instrumentalness'] = instrumentalness
-    sp_tracks['liveness'] = liveness
+    #sp_tracks['liveness'] = liveness
     sp_tracks['valence'] = valence
     sp_tracks['tempo'] = tempo
 
