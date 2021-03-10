@@ -1,5 +1,5 @@
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from requests.exceptions import HTTPError, Timeout
 from spotipy.exceptions import SpotifyException
 
@@ -42,6 +42,7 @@ def get_tracks(playlist_ids):
         sp_track_meta["artists"] = artist_list
 
         return sp_track_meta
+
     except (SpotifyException, HTTPError, Timeout) as e:
         print(e.errno)
         print(e.arg[0])

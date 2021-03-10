@@ -8,9 +8,11 @@ class User(models.Model):
 
 
 class ClassifiedSong(models.Model):
+    moods = [("happy", "happy"), ("sad", "sad"), ("relaxed", "relaxed"), ("angry", "angry")]
     song_id = models.CharField(max_length=22, primary_key=True)
     song_name = models.TextField(null=False)
     artists = models.TextField(null=False)
+    mood = models.CharField(max_length=8, choices=moods, default="")
 
 
 class MoodPlaylist(models.Model):

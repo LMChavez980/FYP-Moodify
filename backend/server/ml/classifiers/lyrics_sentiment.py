@@ -200,6 +200,7 @@ class LyricsSentiment:
         for punc in punctuations:
             lyrics = lyrics.replace(punc, " ")
 
+        # Apply lemmatization to words
         lem_lyrics = []
         list_lyrics = lyrics.split()
         for i in range(len(list_lyrics)):

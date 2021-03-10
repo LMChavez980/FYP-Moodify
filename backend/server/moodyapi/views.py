@@ -7,6 +7,7 @@ from ml.classifiers import lyrics_sentiment, music_mood
 import pandas as pd
 from spotipy.exceptions import SpotifyException
 from requests.exceptions import HTTPError, Timeout
+from moodyapi.models import User, ClassifiedSong, MoodPlaylist
 
 
 # Create your views here.
@@ -22,8 +23,18 @@ def index_page(request):
 class AnalyzeView(views.APIView):
     def post(self, request):
         try:
-            # Get playlist ids
+            # Get playlist ids and user id
+            saved_tracks = request.get('saved_tracks')
             pl_ids = request.data.get('playlist_ids')
+            user_id = request.data.get('user_id')
+
+            # If the user is new add them to the database
+            # Else if user exists already, get their tracks
+            if not User.objects.filter(user_id=user_id).exists():
+                new_user = User(user_id=user_id, user_songs=[])
+                new_user.save()
+
+            user_tracks = User.objects.filter(user_id=user_id).values('user_songs')
 
             # Get tracks of playlist
             pl_tracks = spotify.get_tracks(pl_ids)
@@ -38,7 +49,18 @@ class AnalyzeView(views.APIView):
             pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
 
             # Remove any rows where song lyrics were not found
+            # Remove any rows that have already been classified
+            # Remove any tracks that the user already has classified
             pl_tracks_df = pl_tracks_df[pl_tracks_df.lyrics != ""]
+
+            # Get all tracks
+            moodify_tracks = ClassifiedSong.objects.all()
+
+            if moodify_tracks.count() != 0:
+                pl_tracks_df = pl_tracks_df[~pl_tracks_df.id.isin(moodify_tracks)]
+
+            if len(user_tracks[0]['user_songs']) != 0:
+                pl_tracks_df = pl_tracks_df[~pl_tracks_df.id.isin(user_tracks)]
 
             if not pl_tracks_df.empty:
                 # Initialize the sentiment analyzer
@@ -62,12 +84,25 @@ class AnalyzeView(views.APIView):
 
                 pl_tracks_df["music mood"] = musicmood.mood(pl_tracks_df[test_features])
 
+                new_track_ids = list(pl_tracks_df["id"].values)
+                new_track_names = list(pl_tracks_df["name"].values)
+                new_track_artists = list(pl_tracks_df["artists"].values)
+                new_track_moods = list(pl_tracks_df["music mood"].values)
+
+                # Create bulk insert for new classified songs
+                new_tracks = []
+                for i in range(len(new_track_ids)):
+                    new_tracks.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
+                                                     artists=new_track_artists[i], mood=new_track_moods[i]))
+
+                ClassifiedSong.objects.bulk_create(new_tracks, ignore_conflicts=True)
+
                 print(pl_tracks_df[["name", "artists", "lyrics sentiment", "music mood"]])
 
                 return_data = {
                     "error": "0",
                     "message": "Successful",
-                    "data": [request.data, pl_tracks]
+                    "data": [request.data, pl_tracks_df],
                 }
             else:
                 return_data = {
@@ -81,7 +116,6 @@ class AnalyzeView(views.APIView):
                 request_data = {
                     "error": "1",
                     "message": "There was a HTTP Error in the Moodify process - Please try again",
-
                 }
             elif type(e) == Timeout:
                 request_data = {
