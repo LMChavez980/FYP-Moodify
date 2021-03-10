@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 
 class User(models.Model):
     user_id = models.CharField(max_length=50, primary_key=True)
-    user_songs = ArrayField()
+    user_songs = ArrayField(models.CharField(max_length=22))
 
 
 class ClassifiedSong(models.Model):

@@ -38,7 +38,7 @@ def genius_lyrics(song_title, song_artist):
         return None
 
     except (HTTPError, Timeout) as e:
-        return None
+        raise e
 
 
 def az_lyrics(song_title, song_artist):
@@ -113,10 +113,11 @@ def get_lyrics(tracks_dict):
                     else:
                         print("Could not find song")
                         lyrics_list.append("")
-    except (HTTPError, Timeout) as e:
+    except (HTTPError, Timeout, TypeError) as e:
         print(e.errno)
         print(e.arg[0])
         print(e.arg[1])
+        raise e
 
     tracks_dict["lyrics"] = lyrics_list
 
