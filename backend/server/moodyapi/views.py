@@ -8,6 +8,7 @@ import pandas as pd
 from spotipy.exceptions import SpotifyException
 from requests.exceptions import HTTPError, Timeout
 from moodyapi.models import User, ClassifiedSong, MoodPlaylist
+import moodyapi.dbhelper as dbhelper
 
 
 # Create your views here.
@@ -28,11 +29,8 @@ class AnalyzeView(views.APIView):
             pl_ids = request.data.get('playlist_ids')
             user_id = request.data.get('user_id')
 
-            # If the user is new add them to the database
-            # Else if user exists already, get their tracks
-            if not User.objects.filter(user_id=user_id).exists():
-                new_user = User(user_id=user_id, user_songs=[])
-                new_user.save()
+            # Check if user has used the app before
+            dbhelper.check_user_new(user_id=user_id)
 
             user_tracks = User.objects.filter(user_id=user_id).values('user_songs')
 
@@ -49,20 +47,14 @@ class AnalyzeView(views.APIView):
             pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
 
             # Remove any rows where song lyrics were not found
-            # Remove any rows that have already been classified
-            # Remove any tracks that the user already has classified
-            pl_tracks_df = pl_tracks_df[pl_tracks_df.lyrics != ""]
+            # Check for any songs that have been analysed before
+            #   - if yes skip ML process and get songs that have been analysed that are part of tracks
+            #   - If no then go to ML process and add new songs to ClassifiedSongs table
+            #   - Any existing or new songs add to user songs
+            is_empty, pl_tracks_df = dbhelper.check_empty(pl_tracks_df, user_tracks[0]['user_songs'])
 
-            # Get all tracks
-            moodify_tracks = ClassifiedSong.objects.all()
-
-            if moodify_tracks.count() != 0:
-                pl_tracks_df = pl_tracks_df[~pl_tracks_df.id.isin(moodify_tracks)]
-
-            if len(user_tracks[0]['user_songs']) != 0:
-                pl_tracks_df = pl_tracks_df[~pl_tracks_df.id.isin(user_tracks)]
-
-            if not pl_tracks_df.empty:
+            # If
+            if not is_empty:
                 # Initialize the sentiment analyzer
                 senti_analysis = lyrics_sentiment.LyricsSentiment()
 
