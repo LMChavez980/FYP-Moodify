@@ -1,4 +1,5 @@
 from moodyapi.models import User, ClassifiedSong, MoodPlaylist
+import pandas as pd
 
 """
     This is a class for helper python file for functions related to accessing the database
@@ -19,24 +20,35 @@ def check_empty(tracks_df, user_analysed):
 
     # Check if there are tracks remaining
     if not tracks_df.empty():
-        moodify_tracks = ClassifiedSong.objects.all()
+        moodify_tracks = ClassifiedSong.objects.all().values_list('song_id', flat=True)
 
-        # Only if application is new
-        # If no analysed songs in system db add them - assume user has none too
-        if moodify_tracks.count() != 0:
-            tracks_df = tracks_df[~tracks_df.id.isin(moodify_tracks)]
+        # Get previously analysed tracks in database
+        analysed_tracks = tracks_df[tracks_df.id.isin(moodify_tracks)]
 
-            # Check for matches in user's analysed songs
-            # If
-            if not tracks_df.empty():
-                if len(user_analysed) != 0:
-                    tracks_df = tracks_df[~tracks_df.id.isin(user_analysed)]
+        # If no analysed songs in the database or if all the tracks are new - assumes user has none too
+        # Go through classification for all tracks
+        if moodify_tracks.count() == 0 or analysed_tracks.empty:
+            user_new_tracks = tracks_df["id"]
+            return False, tracks_df, user_new_tracks
+        elif analysed_tracks.count() == moodify_tracks.count():  # If all of the tracks are already analysed
+            # Get tracks that user has out of analysed tracks
+            user_new_tracks = analysed_tracks[~analysed_tracks.id.isin(user_analysed)]
 
-                    if not tracks_df.empty():
-                        return False, tracks_df
-                else:
-                    return False, tracks_df
+            if user_new_tracks.count() != 0:
+                return False, None, user_new_tracks
+            else:
+                return False, None, None
+
         else:
-            return False, tracks_df
+            # Get tracks not in database
+            new_tracks = tracks_df[~tracks_df.id.isin(moodify_tracks)]
 
-    return True, tracks_df, 1
+            # Get tracks that user has out of analysed tracks
+            user_new_tracks = analysed_tracks[~analysed_tracks.id.isin(user_analysed)]
+
+            return False, new_tracks, user_new_tracks
+
+    return True, None, None
+
+test_df = pd.DataFrame()
+empty, ret1, ret2 = check_empty()

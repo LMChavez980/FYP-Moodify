@@ -30,12 +30,13 @@ def get_tracks(playlist_ids):
         artist_list = []
 
         for item in sp_pl_tracks:
-            id = item['track']['id']
-            name = item['track']['name']
-            artist = item['track']['artists'][0]['name']
-            id_list.append(id)
-            name_list.append(name)
-            artist_list.append(artist)
+            if item['track']['id'] not in id_list:
+                t_id = item['track']['id']
+                name = item['track']['name']
+                artist = item['track']['artists'][0]['name']
+                id_list.append(t_id)
+                name_list.append(name)
+                artist_list.append(artist)
 
         sp_track_meta["id"] = id_list
         sp_track_meta["name"] = name_list
