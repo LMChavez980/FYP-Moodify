@@ -34,14 +34,16 @@ class AnalyzeView(views.APIView):
             current_user = User.objects.get(user_id=user_id)
             user_tracks = current_user.user_songs
 
-            """# Get tracks of playlist
+            # Get tracks of playlist
             pl_tracks = spotify.get_tracks(pl_ids)
 
             # Get audio features
             pl_tracks = spotify.get_audio_data(pl_tracks)
 
             # Get lyrics
-            pl_tracks = lyrics.get_lyrics(pl_tracks)"""
+            pl_tracks = lyrics.get_lyrics(pl_tracks)
+
+            pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
 
             #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3",
             #                                    "dummy_song_id_4"], "lyrics": ["", "", "", ""]})
@@ -53,10 +55,10 @@ class AnalyzeView(views.APIView):
             #                                    "dummy_song_id_5"], "lyrics": ["hi", "hi", "hi", "hi"]})
             #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_4"],
             #                             "lyrics": ["hi", "hi", "hi"]})
-            pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_4", "dummy_song_id_5"],
-                                         "lyrics": ["hi", "hi", "hi", "hi"], "music mood": ["happy", "sad", "angry", "relaxed"],
-                                         "name": ["dummy_song_1", "dummy_song_2", "dummy_song_4", "dummy_song_5"],
-                                         "artists": ["dummy_artist", "dummy_artist_2", "dummy_artist_4", "dummy_artist_5"]})
+            #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_4", "dummy_song_id_5"],
+            #                             "lyrics": ["hi", "hi", "hi", "hi"], "music mood": ["happy", "sad", "angry", "relaxed"],
+            #                             "name": ["dummy_song_1", "dummy_song_2", "dummy_song_4", "dummy_song_5"],
+            #                             "artists": ["dummy_artist", "dummy_artist_2", "dummy_artist_4", "dummy_artist_5"]})
 
             # Lyrics to Dataframe
             # pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
@@ -71,7 +73,7 @@ class AnalyzeView(views.APIView):
             is_empty, new_tracks_df, existing_tracks = dbhelper.check_empty(pl_tracks_df, user_tracks)
 
             if (not is_empty) and (new_tracks_df is not None):
-                """ # Initialize the sentiment analyzer
+                # Initialize the sentiment analyzer
                 senti_analysis = lyrics_sentiment.LyricsSentiment()
 
                 # Preprocess the lyrics - expand contractions, remove punctuations etc.
@@ -90,7 +92,7 @@ class AnalyzeView(views.APIView):
                 test_features = ["lyrics sentiment", "mode", "danceability binned", "energy binned", "loudness binned",
                                  "valence binned", "tempo binned"]
 
-                new_tracks_df["music mood"] = musicmood.mood(new_tracks_df[test_features])"""
+                new_tracks_df["music mood"] = musicmood.mood(new_tracks_df[test_features])
 
                 new_track_ids = list(new_tracks_df["id"].values)
                 new_track_names = list(new_tracks_df["name"].values)
@@ -98,23 +100,24 @@ class AnalyzeView(views.APIView):
                 new_track_moods = list(new_tracks_df["music mood"].values)
 
                 # Create bulk insert for new classified songs
-                new_tracks_inserts = []
-                for i in range(len(new_track_ids)):
-                    new_tracks_inserts.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
-                                                             artists=new_track_artists[i], mood=new_track_moods[i]))
+                #new_tracks_inserts = []
+                #for i in range(len(new_track_ids)):
+                 #   new_tracks_inserts.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
+                 #                                            artists=new_track_artists[i], mood=new_track_moods[i]))
 
-                ClassifiedSong.objects.bulk_create(new_tracks_inserts, ignore_conflicts=True)
+                #ClassifiedSong.objects.bulk_create(new_tracks_inserts, ignore_conflicts=True)
 
-               #print(new_tracks_df[["name", "artists", "lyrics sentiment", "music mood"]])
-                print(new_tracks_df[["name", "artists", "music mood"]])
+                print(new_tracks_df[["name", "artists", "lyrics sentiment", "music mood"]])
+                # print(new_tracks_df[["name", "artists", "music mood"]])
 
                 if existing_tracks is not None:
+                    print("Existing:\n", existing_tracks)
                     # Add the existing analysed songs to user_songs and new songs
-                    existing = list(existing_tracks["id"].values)
-                    existing.extend(new_track_ids)
-                    print(existing)
-                    current_user.user_songs.extend(existing)
-                    current_user.save()
+                    #existing = list(existing_tracks["id"].values)
+                    #existing.extend(new_track_ids)
+                    #print(existing)
+                    #current_user.user_songs.extend(existing)
+                    #current_user.save()
                     return_data = {
                         "error": "0",
                         "message": "Added songs to database and user pool",
@@ -122,8 +125,8 @@ class AnalyzeView(views.APIView):
                     }
                 else:
                     # Add the newly analysed songs to user_songs
-                    current_user.user_songs.extend(new_track_ids)
-                    current_user.save()
+                    #current_user.user_songs.extend(new_track_ids)
+                    #current_user.save()
                     return_data = {
                         "error": "0",
                         "message": "Added songs to database and user pool",

@@ -33,7 +33,7 @@ def check_empty(tracks_df, user_analysed):
         # Go through classification for all tracks
         if moodify_tracks.count() == 0 or analysed_tracks.empty:
             print("Test 3: All new tracks")
-            user_new_tracks = tracks_df["id"]
+            user_new_tracks = pd.DataFrame(tracks_df["id"].values, columns=["id"])
             return False, tracks_df, user_new_tracks
         else:
             # Get tracks not in database
