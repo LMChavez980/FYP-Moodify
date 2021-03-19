@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/SpotifyBlack">
+
+    <View
+        android:id="@+id/VerticalDivider"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_centerVertical="true"
+        android:background="@color/SpotifyBlack"
+        android:visibility="visible" />
+
+    <View
+        android:id="@+id/HorizontalDivider"
+        android:layout_width="5dp"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:background="@color/SpotifyBlack"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/select_angry_btn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/VerticalDivider"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@id/HorizontalDivider"
+        android:background="#FF0000"
+        android:gravity="center"
+        android:text="@string/angry"
+        android:textColor="@color/SpotifyWhite" />
+
+    <Button
+        android:id="@+id/select_happy_btn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/VerticalDivider"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/HorizontalDivider"
+        android:background="#FFA500"
+        android:gravity="center"
+        android:text="@string/happy"
+        android:textColor="@color/SpotifyWhite" />
+
+    <Button
+        android:id="@+id/select_relaxed_btn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/VerticalDivider"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/HorizontalDivider"
+        android:background="#1E90FF"
+        android:gravity="center"
+        android:text="@string/relaxed"
+        android:textColor="@color/SpotifyWhite" />
+
+    <Button
+        android:id="@+id/select_sad_btn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/VerticalDivider"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/HorizontalDivider"
+        android:background="#800080"
+        android:gravity="center"
+        android:text="@string/sad"
+        android:textColor="@color/SpotifyWhite" />
+
+</RelativeLayout>
