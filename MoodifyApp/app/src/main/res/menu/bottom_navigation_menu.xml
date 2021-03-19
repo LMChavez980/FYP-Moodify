@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+        android:id="@+id/nav_add_to_pool"
+        android:icon="@drawable/ic_baseline_playlist_add_24"
+        android:title="@string/add_to_pool_btn" />
+    <item
+        android:id="@+id/nav_generate"
+        android:icon="@drawable/ic_baseline_add_circle_outline_24"
+        android:title="@string/select_mood_btn" />
+    <item
+        android:id="@+id/nav_statistics"
+        android:icon="@drawable/ic_baseline_bar_chart_24"
+        android:title="@string/mood_stats_btn" />
 </menu>

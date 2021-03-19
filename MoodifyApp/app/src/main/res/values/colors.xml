@@ -3,4 +3,7 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="SpotifyBlack">#191414</color>
+    <color name="SpotifyWhite">#FFFFFF</color>
+    <color name="SpotifyGreen">#1D8954</color>
 </resources>

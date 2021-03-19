@@ -25,6 +25,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:clickable="true"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:backgroundTint="@color/SpotifyGreen"
+        app:srcCompat="@drawable/ic_baseline_send_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
