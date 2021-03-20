@@ -1,5 +1,6 @@
 package com.fypmood.moodify;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,8 +8,10 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,17 +69,33 @@ public class AddToPoolFrag extends Fragment {
                         List<PlaylistSimple> mPlaylists = mExPlaylistAdapter.getmPlaylistList();
                         SparseBooleanArray chosen = mExPlaylistAdapter.getCheckBoxState();
                         String id = "";
-                        for(int i = 1; i < len; i++)
-                        {
-                            if(chosen.get(i))
-                            {
+                        for(int i = 1; i < len; i++) {
+                            if (chosen.get(i)) {
                                 id = mPlaylists.get(i).id;
                                 mPlaylistsIds.add(id);
                             }
                         }
                         Toast.makeText(getContext(), mPlaylistsIds.toString(), Toast.LENGTH_LONG).show();
+                        Intent serviceIntent = new Intent(mainActivity, AnalyzeService.class);
+                        serviceIntent.putExtra("inputExtra", "Analyze Foreground Service");
+                        mainActivity.startForegroundService(serviceIntent);
+                        Toast.makeText(getContext(), "Service Started", Toast.LENGTH_LONG).show();
+                        Log.i("ATP", "Service Started");
+                    }
+
+                });
+
+                Button stopServiceBtn = rootView.findViewById(R.id.test_button);
+                stopServiceBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent serviceIntent = new Intent(mainActivity, AnalyzeService.class);
+                        Toast.makeText(getContext(), "Stopping Service", Toast.LENGTH_LONG).show();
+                        mainActivity.stopService(serviceIntent);
+                        Log.i("ATP", "Service Stopped");
                     }
                 });
+
             }
 
             @Override
