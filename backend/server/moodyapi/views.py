@@ -24,9 +24,11 @@ class AnalyzeView(views.APIView):
     def post(self, request):
         try:
             # Get playlist ids and user id
-            # saved_tracks = request.get('saved_tracks')
+            saved_tracks = request.data.get('saved_tracks')
             pl_ids = request.data.get('playlist_ids')
             user_id = request.data.get('user_id')
+
+            print(request.data)
 
             # Check if user has used the app before
             dbhelper.check_user_new(user_id=user_id)
@@ -121,7 +123,7 @@ class AnalyzeView(views.APIView):
                     return_data = {
                         "error": "0",
                         "message": "Added songs to database and user pool",
-                        "data": [request.data, new_tracks_df["id"], existing_tracks["id"]],
+                        "data": [new_tracks_df["id"], existing_tracks["id"]],
                     }
                 else:
                     # Add the newly analysed songs to user_songs
@@ -130,7 +132,7 @@ class AnalyzeView(views.APIView):
                     return_data = {
                         "error": "0",
                         "message": "Added songs to database and user pool",
-                        "data": [request.data, new_tracks_df["id"]],
+                        "data": [new_tracks_df["id"]],
                     }
             # If songs don't need reclassification or adding to user
             elif (not is_empty) and (new_tracks_df is None) and (existing_tracks is None):

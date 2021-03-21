@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?selectableItemBackground"
+    android:background="@color/SpotifyBlack"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical">
@@ -13,14 +13,17 @@
         style="@style/playlist_list_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/SpotifyBlack"
+        android:buttonTint="@color/SpotifyGreen"
         android:elevation="8dp"
         android:text="@string/playlist_name"
+        android:textColor="@color/SpotifyWhite"
         android:textSize="18sp" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_below="@id/list_item"
-        android:background="?attr/dividerHorizontal"/>
+        android:background="@color/SpotifyBlack" />
 
 </RelativeLayout>

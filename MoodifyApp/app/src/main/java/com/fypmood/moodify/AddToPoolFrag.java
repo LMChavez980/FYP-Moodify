@@ -76,8 +76,17 @@ public class AddToPoolFrag extends Fragment {
                             }
                         }
                         Toast.makeText(getContext(), mPlaylistsIds.toString(), Toast.LENGTH_LONG).show();
-                        Intent serviceIntent = new Intent(mainActivity, AnalyzeService.class);
+                        Intent serviceIntent = new Intent(mainActivity, AnalyzeIntentService.class);
+                        if(chosen.get(0)){
+                            serviceIntent.putExtra("saved_tracks", "1");
+                        }
+                        else
+                        {
+                            serviceIntent.putExtra("saved_tracks", "0");
+                        }
+                        serviceIntent.putStringArrayListExtra("pl_ids", mPlaylistsIds);
                         serviceIntent.putExtra("inputExtra", "Analyze Foreground Service");
+                        serviceIntent.putExtra("user_id", mainActivity.mSharedPreferences.getString("USERID", ""));
                         mainActivity.startForegroundService(serviceIntent);
                         Toast.makeText(getContext(), "Service Started", Toast.LENGTH_LONG).show();
                         Log.i("ATP", "Service Started");
@@ -100,7 +109,7 @@ public class AddToPoolFrag extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("ATP", error.getMessage());
+                Log.e("ATP", "Error:"+error.getMessage());
             }
         });
 
