@@ -6,7 +6,7 @@ from ml.classifiers import lyrics_sentiment, music_mood
 import pandas as pd
 from spotipy.exceptions import SpotifyException
 from requests.exceptions import HTTPError, Timeout
-from moodyapi.models import User, ClassifiedSong
+from moodyapi.models import User, ClassifiedSong, MoodPlaylist
 import helpers.dbhelper as dbhelper
 
 
@@ -25,10 +25,16 @@ class AnalyzeView(views.APIView):
         try:
             # Get playlist ids and user id
             saved_tracks = request.data.get('saved_tracks')
+            token = request.data.get('auth_token')
             pl_ids = request.data.get('playlist_ids')
             user_id = request.data.get('user_id')
 
             print(request.data)
+
+            if saved_tracks == "1":
+                saved_tracks = True
+            else:
+                saved_tracks = False
 
             # Check if user has used the app before
             dbhelper.check_user_new(user_id=user_id)
@@ -37,7 +43,7 @@ class AnalyzeView(views.APIView):
             user_tracks = current_user.user_songs
 
             # Get tracks of playlist
-            pl_tracks = spotify.get_tracks(pl_ids)
+            pl_tracks = spotify.get_tracks(pl_ids, saved_tracks, token)
 
             # Get audio features
             pl_tracks = spotify.get_audio_data(pl_tracks)
@@ -181,3 +187,56 @@ class AnalyzeView(views.APIView):
                 }
 
         return Response(return_data)
+
+
+class GeneratePlaylist(views.APIView):
+    def post(self, request):
+        # user_id, auth_token, mood_selected
+        userid = request.data.get('user_id')
+        auth = request.data.get('auth_token')
+        user_mood = request.data.get('mood_selected')
+
+        # Check if user exists
+        dbhelper.check_user_new(user_id=userid)
+
+        # Check if user has songs in db and in the mood category selected
+        user_tracks = User.objects.values_list('user_songs', flat=True).filter(user_id=userid)[0]
+
+        if len(user_tracks) != 0:
+            mood_tracks = ClassifiedSong.objects.values_list('song_id', flat=True).filter(song_id__in=user_tracks, mood=user_mood)
+
+            if len(mood_tracks) != 0:
+                # Get mood playlist index - add one in case it's 0
+                playlist_track_no = MoodPlaylist.objects.filter(user_id=userid).count() + 1
+
+                # If there is proceed to create the playlist
+                new_playlist_id = spotify.create_playlist(userid, user_mood, user_tracks, playlist_track_no, auth)
+
+                if new_playlist_id is not None:
+                    MoodPlaylist.objects.create(playlist_id=new_playlist_id, user_id_id=userid)
+
+                    return_data = {
+                        "error": "0",
+                        "message": "Playlist Created Successfully",
+                        "data": [new_playlist_id]
+                    }
+                else:
+                    return_data = {
+                        "error": "5",
+                        "message": "Playlist could not be created. There was an error in the Moodify process - Please "
+                                   "try again "
+                    }
+            else:
+                return_data = {
+                    "error": "5",
+                    "message": "Playlist could not be created. You do not have any analysed tracks"
+                }
+        else:
+            return_data = {
+                "error": "5",
+                "message": "Playlist could not be created. You do not have any analysed tracks"
+            }
+
+        return Response(return_data)
+
+

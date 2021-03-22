@@ -114,9 +114,10 @@ def get_lyrics(tracks_dict):
                         print("Could not find song")
                         lyrics_list.append("")
     except (HTTPError, Timeout, TypeError) as e:
-        print(e.errno)
-        print(e.arg[0])
-        print(e.arg[1])
+        if type(e) == HTTPError or type(e) == Timeout:
+            print(e.errno)
+            print(e.arg[0])
+            print(e.arg[1])
         raise e
 
     tracks_dict["lyrics"] = lyrics_list

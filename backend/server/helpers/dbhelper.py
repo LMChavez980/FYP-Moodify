@@ -9,7 +9,7 @@ import pandas as pd
 def check_user_new(user_id):
     # If the user is new add them to the database
     # Else if user exists already, get their tracks
-    if not User.objects.filter(user_id=user_id).exists():
+    if not User.objects.filter(user_id=user_id).exists() and user_id.strip() != "":
         new_user = User(user_id=user_id, user_songs=[])
         new_user.save()
 
@@ -49,7 +49,7 @@ def check_empty(tracks_df, user_analysed):
             if not user_new_tracks.empty and new_tracks.empty:
                 print("Test 5 Exit: All analysed but not assigned to user")
                 return False, None, user_new_tracks
-            elif  user_new_tracks.empty and not new_tracks.empty:
+            elif user_new_tracks.empty and not new_tracks.empty:
                 print("Test 4 Exit: New tracks to add to database")
                 return False, new_tracks, None
             elif not user_new_tracks.empty and not new_tracks.empty:
@@ -61,7 +61,6 @@ def check_empty(tracks_df, user_analysed):
 
     print("Test 1 Exit: No Lyrics")
     return True, None, None
-
 
 """
 test_df1 = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3",
