@@ -87,6 +87,7 @@ public class AddToPoolFrag extends Fragment {
                         serviceIntent.putStringArrayListExtra("pl_ids", mPlaylistsIds);
                         serviceIntent.putExtra("content", "Analyzing Your Playlists");
                         serviceIntent.putExtra("user_id", mainActivity.mSharedPreferences.getString("USERID", ""));
+                        serviceIntent.putExtra("auth_token", mainActivity.mSharedPreferences.getString("TOKEN", ""));
                         mainActivity.startForegroundService(serviceIntent);
                         Toast.makeText(getContext(), "Service Started", Toast.LENGTH_LONG).show();
                         Log.i("ATP", "Service Started");

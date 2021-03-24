@@ -15,6 +15,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -23,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 public class AnalyzeService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
+    private int startAnalysisId = 1;
+    private int endAnalysisId = 2;
 
     @Override
     public void onCreate(){
@@ -54,7 +57,7 @@ public class AnalyzeService extends Service {
                 .setContentIntent(pendingIntent)
                 .build();
 
-        startForeground(1, notification);
+        startForeground(startAnalysisId, notification);
 
         callAPI(intent, manager);
 
@@ -64,7 +67,6 @@ public class AnalyzeService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 
     @Nullable
@@ -88,38 +90,56 @@ public class AnalyzeService extends Service {
 
         String save_tracks = intent.getStringExtra("saved_tracks");
         String user_id = intent.getStringExtra("user_id");
+        String auth_token = intent.getStringExtra("auth_token");
         ArrayList<String> pl_ids = intent.getStringArrayListExtra("pl_ids");
-        MoodifyApiResponse apiRequest = new MoodifyApiResponse(save_tracks, pl_ids, user_id);
+        MoodifyApiResponse apiRequest = new MoodifyApiResponse(save_tracks, pl_ids, user_id, auth_token);
 
         Call<MoodifyApiResponse> apiResponseCall  = service.PlaylistAnalysis(apiRequest);
         apiResponseCall.enqueue(new Callback<MoodifyApiResponse>() {
             @Override
-            public void onResponse(Call<MoodifyApiResponse> call, Response<MoodifyApiResponse> response) {
+            public void onResponse(@NonNull Call<MoodifyApiResponse> call, @NonNull Response<MoodifyApiResponse> response) {
+                Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                        0, notificationIntent, 0);
                 if (response.isSuccessful()){
-                    System.out.println("Response:"+response.body());
-                    Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                            0, notificationIntent, 0);
+                    System.out.println("Response: "+response.body());
                     Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                             .setContentTitle("Moodify Add To Pool")
                             .setContentText("Tracks Successfully added to pool")
                             .setSmallIcon(R.drawable.ic_launcher_foreground)
                             .setContentIntent(pendingIntent)
                             .build();
-                    manager.notify(2, notification);
-                    stopForeground(true);
+                    manager.notify(endAnalysisId, notification);
                 }
                 else
                 {
-                    System.out.println("Failed:"+response.errorBody());
-                    stopForeground(true);
+                    System.out.println("Failed: "+response.errorBody());
+                    Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                            .setContentTitle("Moodify Add To Pool")
+                            .setContentText("An Error Occured - Please Try Again")
+                            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                            .setContentIntent(pendingIntent)
+                            .build();
+                    manager.notify(endAnalysisId, notification);
                 }
+
+                stopForeground(true);
 
             }
 
             @Override
-            public void onFailure(Call<MoodifyApiResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<MoodifyApiResponse> call, @NonNull Throwable t) {
                 System.out.println("Error:"+t.toString());
+                Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                        0, notificationIntent, 0);
+                Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                        .setContentTitle("Moodify Add To Pool")
+                        .setContentText("An Error Occured - Please Try Again")
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setContentIntent(pendingIntent)
+                        .build();
+                manager.notify(endAnalysisId, notification);
                 stopForeground(true);
             }
         });

@@ -73,8 +73,9 @@ public class AnalyzeIntentService extends IntentService {
 
         String save_tracks = intent.getStringExtra("saved_tracks");
         String user_id = intent.getStringExtra("user_id");
+        String auth_token = intent.getStringExtra("auth_token");
         ArrayList<String> pl_ids = intent.getStringArrayListExtra("pl_ids");
-        MoodifyApiResponse apiRequest = new MoodifyApiResponse(save_tracks, pl_ids, user_id);
+        MoodifyApiResponse apiRequest = new MoodifyApiResponse(save_tracks, pl_ids, user_id, auth_token);
 
         Call<MoodifyApiResponse> apiResponseCall  = service.PlaylistAnalysis(apiRequest);
         apiResponseCall.enqueue(new Callback<MoodifyApiResponse>() {
