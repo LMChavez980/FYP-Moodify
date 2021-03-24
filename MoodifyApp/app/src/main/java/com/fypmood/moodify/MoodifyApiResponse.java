@@ -10,7 +10,7 @@ import java.util.List;
 
 import retrofit2.http.Query;
 
-public class AnalyzeApiResponse {
+public class MoodifyApiResponse {
     @SerializedName("saved_tracks")
     @Expose
     String saved_tracks;
@@ -30,7 +30,7 @@ public class AnalyzeApiResponse {
     @Expose
     List<List<String>> data;
 
-    public AnalyzeApiResponse(String saved_tracks_status, ArrayList<String> playlist_ids, String userid){
+    public MoodifyApiResponse(String saved_tracks_status, ArrayList<String> playlist_ids, String userid){
         saved_tracks = saved_tracks_status;
         pl_ids = playlist_ids;
         user_id = userid;

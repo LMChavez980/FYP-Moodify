@@ -74,12 +74,12 @@ public class AnalyzeIntentService extends IntentService {
         String save_tracks = intent.getStringExtra("saved_tracks");
         String user_id = intent.getStringExtra("user_id");
         ArrayList<String> pl_ids = intent.getStringArrayListExtra("pl_ids");
-        AnalyzeApiResponse apiRequest = new AnalyzeApiResponse(save_tracks, pl_ids, user_id);
+        MoodifyApiResponse apiRequest = new MoodifyApiResponse(save_tracks, pl_ids, user_id);
 
-        Call<AnalyzeApiResponse> apiResponseCall  = service.PlaylistAnalysis(apiRequest);
-        apiResponseCall.enqueue(new Callback<AnalyzeApiResponse>() {
+        Call<MoodifyApiResponse> apiResponseCall  = service.PlaylistAnalysis(apiRequest);
+        apiResponseCall.enqueue(new Callback<MoodifyApiResponse>() {
             @Override
-            public void onResponse(Call<AnalyzeApiResponse> call, Response<AnalyzeApiResponse> response) {
+            public void onResponse(Call<MoodifyApiResponse> call, Response<MoodifyApiResponse> response) {
                 if (response.isSuccessful()){
                     System.out.println("Response:"+response.body());
                 }
@@ -91,7 +91,7 @@ public class AnalyzeIntentService extends IntentService {
             }
 
             @Override
-            public void onFailure(Call<AnalyzeApiResponse> call, Throwable t) {
+            public void onFailure(Call<MoodifyApiResponse> call, Throwable t) {
                 System.out.println("Error:"+t.toString());
             }
         });

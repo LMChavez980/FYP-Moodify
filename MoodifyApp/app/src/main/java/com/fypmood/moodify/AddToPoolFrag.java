@@ -76,7 +76,7 @@ public class AddToPoolFrag extends Fragment {
                             }
                         }
                         Toast.makeText(getContext(), mPlaylistsIds.toString(), Toast.LENGTH_LONG).show();
-                        Intent serviceIntent = new Intent(mainActivity, AnalyzeIntentService.class);
+                        Intent serviceIntent = new Intent(mainActivity, AnalyzeService.class);
                         if(chosen.get(0)){
                             serviceIntent.putExtra("saved_tracks", "1");
                         }
@@ -85,7 +85,7 @@ public class AddToPoolFrag extends Fragment {
                             serviceIntent.putExtra("saved_tracks", "0");
                         }
                         serviceIntent.putStringArrayListExtra("pl_ids", mPlaylistsIds);
-                        serviceIntent.putExtra("inputExtra", "Analyze Foreground Service");
+                        serviceIntent.putExtra("content", "Analyzing Your Playlists");
                         serviceIntent.putExtra("user_id", mainActivity.mSharedPreferences.getString("USERID", ""));
                         mainActivity.startForegroundService(serviceIntent);
                         Toast.makeText(getContext(), "Service Started", Toast.LENGTH_LONG).show();
