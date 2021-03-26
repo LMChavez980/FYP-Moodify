@@ -196,10 +196,17 @@ class GeneratePlaylist(views.APIView):
         auth = request.data.get('auth_token')
         user_mood = request.data.get('mood_selected')
 
+        print(userid,  "\n", auth,"\n", user_mood)
+
         # Check if user exists
         dbhelper.check_user_new(user_id=userid)
 
-        # Check if user has songs in db and in the mood category selected
+        return_data = {
+            "error": "0",
+            "message": "Successful connection"
+        }
+
+        """# Check if user has songs in db and in the mood category selected
         user_tracks = User.objects.values_list('user_songs', flat=True).filter(user_id=userid)[0]
 
         if len(user_tracks) != 0:
@@ -235,8 +242,36 @@ class GeneratePlaylist(views.APIView):
             return_data = {
                 "error": "5",
                 "message": "Playlist could not be created. You do not have any analysed tracks"
-            }
+            }"""
 
         return Response(return_data)
 
+@api_view(['POST'])
+def mood_statistics(request):
+    user_id = request.data.get('user_id')
+
+    # Check if user has used the app before
+    dbhelper.check_user_new(user_id=user_id)
+
+    # Get user songs
+    user_tracks = User.objects.values_list('user_songs', flat=True).filter(user_id=user_id)[0]
+
+    if len(user_tracks) != 0:
+        moods = ["happy", "sad", "angry", "relaxed"]
+        mood_count = dict.fromkeys(moods, 0)
+
+        for emo in moods:
+            mood_count[emo] = ClassifiedSong.objects.filter(song_id__in=user_tracks, mood=emo).count()
+
+        return_data = {
+            "error": "0",
+            "data": mood_count
+        }
+    else:
+        return_data = {
+            "error": "0",
+            "message": "No songs in your pool - Add to pool"
+        }
+
+    return Response(return_data)
 

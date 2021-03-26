@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -28,7 +29,6 @@ public class StatisticsFrag extends Fragment {
         pieChart = rootView.findViewById(R.id.piechart);
 
         showPieChart();
-
 
         return rootView;
     }
@@ -71,6 +71,8 @@ public class StatisticsFrag extends Fragment {
         PieData pieData = new PieData(pieDataSet);
         //showing the value of the entries, default true if not set
         pieData.setDrawValues(true);
+        pieChart.getLegend().setTextColor(Color.WHITE);
+        pieChart.getLegend().set
 
         pieChart.setData(pieData);
         pieChart.invalidate();
