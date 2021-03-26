@@ -29,7 +29,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@id/HorizontalDivider"
-        android:background="#FF0000"
+        android:background="@color/angryColor"
         android:gravity="center"
         android:text="@string/angry"
         android:textColor="@color/SpotifyWhite" />
@@ -42,7 +42,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/HorizontalDivider"
-        android:background="#FFA500"
+        android:background="@color/happyColor"
         android:gravity="center"
         android:text="@string/happy"
         android:textColor="@color/SpotifyWhite" />
@@ -55,7 +55,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@+id/HorizontalDivider"
-        android:background="#1E90FF"
+        android:background="@color/relaxedColor"
         android:gravity="center"
         android:text="@string/relaxed"
         android:textColor="@color/SpotifyWhite" />
@@ -68,7 +68,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_toStartOf="@+id/HorizontalDivider"
-        android:background="#800080"
+        android:background="@color/sadColor"
         android:gravity="center"
         android:text="@string/sad"
         android:textColor="@color/SpotifyWhite" />

@@ -27,30 +27,29 @@ def check_empty(tracks_df, user_analysed):
         # Get previously analysed tracks in database
         analysed_tracks = tracks_df[tracks_df.id.isin(moodify_tracks)]
 
-        print("Analysed:", analysed_tracks)
+        print("Analysed:", analysed_tracks['id'])
 
         # If no analysed songs in the database or if all the tracks are new - assumes user has none too
         # Go through classification for all tracks
         if moodify_tracks.count() == 0 or analysed_tracks.empty:
             print("Test 3: All new tracks")
-            user_new_tracks = pd.DataFrame(tracks_df["id"].values, columns=["id"])
-            return False, tracks_df, user_new_tracks
+            return False, tracks_df, None
         else:
             # Get tracks not in database
             new_tracks = tracks_df[~tracks_df.id.isin(moodify_tracks)]
 
-            print(new_tracks)
+            print("moodify new tracks:", new_tracks['id'])
 
-            # Get tracks that user has out of analysed tracks
+            # Get tracks that have been analysed but not been assigned to user
             user_new_tracks = analysed_tracks[~analysed_tracks.id.isin(user_analysed)]
 
-            print("user new tracks", user_new_tracks)
+            print("user new tracks:", user_new_tracks['id'])
 
             if not user_new_tracks.empty and new_tracks.empty:
                 print("Test 5 Exit: All analysed but not assigned to user")
                 return False, None, user_new_tracks
             elif user_new_tracks.empty and not new_tracks.empty:
-                print("Test 4 Exit: New tracks to add to database")
+                print("Test 4 Exit: New tracks to add to database but all analysed have been assigned to user")
                 return False, new_tracks, None
             elif not user_new_tracks.empty and not new_tracks.empty:
                 print("Test 6 Exit: New tracks and existing tracks to add to user pool")

@@ -53,25 +53,21 @@ class AnalyzeView(views.APIView):
 
             pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
 
-            #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3",
+            # pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3",
             #                                    "dummy_song_id_4"], "lyrics": ["", "", "", ""]})
-            #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3"],
+            # pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3"],
             #                         "lyrics": ["Hello", "Hello", "Hello"]})
-            #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_5", "dummy_song_id_6", "dummy_song_id_7",
+            # pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_5", "dummy_song_id_6", "dummy_song_id_7",
             #                                "dummy_song_id_8"], "lyrics": ["hi", "hi", "hi", "hi"]})
             #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3",
             #                                    "dummy_song_id_5"], "lyrics": ["hi", "hi", "hi", "hi"]})
-            #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_4"],
+            # pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_4"],
             #                             "lyrics": ["hi", "hi", "hi"]})
             #pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_4", "dummy_song_id_5"],
             #                             "lyrics": ["hi", "hi", "hi", "hi"], "music mood": ["happy", "sad", "angry", "relaxed"],
             #                             "name": ["dummy_song_1", "dummy_song_2", "dummy_song_4", "dummy_song_5"],
             #                             "artists": ["dummy_artist", "dummy_artist_2", "dummy_artist_4", "dummy_artist_5"]})
 
-            # Lyrics to Dataframe
-            # pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
-
-            # new_tracks_df = pl_tracks_df[pl_tracks_df.lyrics != ""]
 
             # Remove any rows where song lyrics were not found
             # Check for any songs that have been analysed before
@@ -110,8 +106,8 @@ class AnalyzeView(views.APIView):
                 # Create bulk insert for new classified songs
                 #new_tracks_inserts = []
                 #for i in range(len(new_track_ids)):
-                 #   new_tracks_inserts.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
-                 #                                            artists=new_track_artists[i], mood=new_track_moods[i]))
+                #    new_tracks_inserts.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
+                #                                           artists=new_track_artists[i], mood=new_track_moods[i]))
 
                 #ClassifiedSong.objects.bulk_create(new_tracks_inserts, ignore_conflicts=True)
 
@@ -120,7 +116,7 @@ class AnalyzeView(views.APIView):
 
                 if existing_tracks is not None:
                     print("Existing:\n", existing_tracks)
-                    # Add the existing analysed songs to user_songs and new songs
+                    #Add the existing analysed songs to user_songs and new songs
                     #existing = list(existing_tracks["id"].values)
                     #existing.extend(new_track_ids)
                     #print(existing)
@@ -128,8 +124,8 @@ class AnalyzeView(views.APIView):
                     #current_user.save()
                     return_data = {
                         "error": "0",
-                        "message": "Added songs to database and user pool",
-                        "data": [new_tracks_df["id"], existing_tracks["id"]],
+                        "message": "Added songs to database and user pool"
+                        #"data": [new_tracks_df['id'], existing_tracks['id']]
                     }
                 else:
                     # Add the newly analysed songs to user_songs
@@ -137,8 +133,8 @@ class AnalyzeView(views.APIView):
                     #current_user.save()
                     return_data = {
                         "error": "0",
-                        "message": "Added songs to database and user pool",
-                        "data": [new_tracks_df["id"]],
+                        "message": "Added songs to database and user pool"
+                        #"data": [new_tracks_df['id']]
                     }
             # If songs don't need reclassification or adding to user
             elif (not is_empty) and (new_tracks_df is None) and (existing_tracks is None):
@@ -148,12 +144,13 @@ class AnalyzeView(views.APIView):
                 }
             # If songs don't need to be classified but need to be added to user
             elif (not is_empty) and (new_tracks_df is None) and (existing_tracks is not None):
-                # current_user_obj = User.objects.get(user_id=user_id)
-                # current_user_obj.user_songs.extend(existing_tracks["id"])
-                # current_user_obj.save()
+                #current_user_obj = User.objects.get(user_id=user_id)
+                #current_user_obj.user_songs.extend(existing_tracks["id"])
+                #current_user_obj.save()
                 return_data = {
                     "error": "0",
-                    "message": "{} songs added to song pool"
+                    "message": "{} songs added to song pool",
+                    "data": [existing_tracks['id']]
                 }
             # if no songs returned due to no lyrics
             else:
@@ -191,87 +188,98 @@ class AnalyzeView(views.APIView):
 
 class GeneratePlaylist(views.APIView):
     def post(self, request):
-        # user_id, auth_token, mood_selected
-        userid = request.data.get('user_id')
-        auth = request.data.get('auth_token')
-        user_mood = request.data.get('mood_selected')
+        try:
 
-        print(userid,  "\n", auth,"\n", user_mood)
+            # user_id, auth_token, mood_selected
+            userid = request.data.get('user_id')
+            auth = request.data.get('auth_token')
+            user_mood = request.data.get('mood_selected')
 
-        # Check if user exists
-        dbhelper.check_user_new(user_id=userid)
+            print(userid, "\n", auth, "\n", user_mood)
 
-        return_data = {
-            "error": "0",
-            "message": "Successful connection"
-        }
+            # Check if user exists
+            dbhelper.check_user_new(user_id=userid)
 
-        """# Check if user has songs in db and in the mood category selected
-        user_tracks = User.objects.values_list('user_songs', flat=True).filter(user_id=userid)[0]
+            # Check if user has songs in db and in the mood category selected
+            user_tracks = User.objects.values_list('user_songs', flat=True).filter(user_id=userid)[0]
 
-        if len(user_tracks) != 0:
-            mood_tracks = ClassifiedSong.objects.values_list('song_id', flat=True).filter(song_id__in=user_tracks, mood=user_mood)
+            if len(user_tracks) != 0:
+                mood_tracks = ClassifiedSong.objects.values_list('song_id', flat=True).filter(song_id__in=user_tracks, mood=user_mood)
 
-            if len(mood_tracks) != 0:
-                # Get mood playlist index - add one in case it's 0
-                playlist_track_no = MoodPlaylist.objects.filter(user_id=userid).count() + 1
+                if len(mood_tracks) != 0:
+                    # Get mood playlist index - add one in case it's 0
+                    playlist_track_no = MoodPlaylist.objects.filter(user_id=userid, mood=user_mood).count() + 1
 
-                # If there is proceed to create the playlist
-                new_playlist_id = spotify.create_playlist(userid, user_mood, user_tracks, playlist_track_no, auth)
+                    # If there is proceed to create the playlist
+                    new_playlist_id = spotify.create_playlist(userid, user_mood, mood_tracks, playlist_track_no, auth)
 
-                if new_playlist_id is not None:
-                    MoodPlaylist.objects.create(playlist_id=new_playlist_id, user_id_id=userid)
+                    if new_playlist_id is not None:
+                        MoodPlaylist.objects.create(playlist_id=new_playlist_id, user_id_id=userid, mood=user_mood)
 
-                    return_data = {
-                        "error": "0",
-                        "message": "Playlist Created Successfully",
-                        "data": [new_playlist_id]
-                    }
+                        return_data = {
+                            "error": "0",
+                            "message": "Playlist Created Successfully",
+                            "data": {"new_playlist_id": new_playlist_id}
+                        }
+                    else:
+                        return_data = {
+                            "error": "5",
+                            "message": "Playlist could not be created. There was an error in the Moodify process - Please "
+                                       "try again "
+                        }
                 else:
                     return_data = {
                         "error": "5",
-                        "message": "Playlist could not be created. There was an error in the Moodify process - Please "
-                                   "try again "
+                        "message": "Playlist could not be created. You do not have any analysed tracks"
                     }
             else:
                 return_data = {
                     "error": "5",
                     "message": "Playlist could not be created. You do not have any analysed tracks"
                 }
-        else:
+        except Exception as e:
+            print(e.args)
             return_data = {
-                "error": "5",
-                "message": "Playlist could not be created. You do not have any analysed tracks"
-            }"""
+                "error": "1",
+                "message": "An error has occured"
+            }
 
         return Response(return_data)
 
+
 @api_view(['POST'])
 def mood_statistics(request):
-    user_id = request.data.get('user_id')
+    try:
+        user_id = request.data.get('user_id')
 
-    # Check if user has used the app before
-    dbhelper.check_user_new(user_id=user_id)
+        # Check if user has used the app before
+        dbhelper.check_user_new(user_id=user_id)
 
-    # Get user songs
-    user_tracks = User.objects.values_list('user_songs', flat=True).filter(user_id=user_id)[0]
+        # Get user songs
+        user_tracks = User.objects.values_list('user_songs', flat=True).filter(user_id=user_id)[0]
 
-    if len(user_tracks) != 0:
-        moods = ["happy", "sad", "angry", "relaxed"]
-        mood_count = dict.fromkeys(moods, 0)
+        if len(user_tracks) != 0:
+            moods = ["happy", "sad", "angry", "relaxed"]
+            mood_count = dict.fromkeys(moods, 0)
 
-        for emo in moods:
-            mood_count[emo] = ClassifiedSong.objects.filter(song_id__in=user_tracks, mood=emo).count()
+            for emo in moods:
+                mood_count[emo] = ClassifiedSong.objects.filter(song_id__in=user_tracks, mood=emo).count()
 
+            return_data = {
+                "error": "0",
+                "message": "Statistics retrieved",
+                "data": mood_count
+            }
+        else:
+            return_data = {
+                "error": "0",
+                "message": "No songs in your pool - Add to pool"
+            }
+    except Exception as e:
+        print(e.args)
         return_data = {
             "error": "0",
-            "data": mood_count
-        }
-    else:
-        return_data = {
-            "error": "0",
-            "message": "No songs in your pool - Add to pool"
+            "message": "An Error Occured: Could not load statistics"
         }
 
     return Response(return_data)
-

@@ -6,6 +6,8 @@ from spotipy.exceptions import SpotifyException
 CLIENT_ID = "4110566732ad4c08b6f0e6c5768e552d"
 CLIENT_SECRET = "d940799ff9554e9fa9cf28ccd54d5850"
 
+mood_labels = {"happy": "Happy", "relaxed": "Relaxed", "sad": "Sad", "angry": "Angry"}
+
 
 def get_tracks(playlist_ids, include_save_tracks, auth_token):
     try:
@@ -120,10 +122,10 @@ def get_user_saved(auth_token):
 
 
 def create_playlist(userid, mood, tracks, pl_index, auth_token):
-    playlist_name = "Moodify {mood} Playlist {index}".format(mood=mood, index=pl_index)
+    playlist_name = "Moodify {mood} {index}".format(mood=mood_labels[mood], index=pl_index)
     playlist_id = ""
     user_playlists = []
-    playlist_desc = "Playlist created using moodify"
+    playlist_desc = "Playlist created using Moodify. Mood Selected: {mood}".format(mood=mood_labels[mood])
 
     try:
         sp = spotipy.Spotify(auth_token)
@@ -148,8 +150,8 @@ def create_playlist(userid, mood, tracks, pl_index, auth_token):
         else:
             return None
 
-    except (SpotifyException, HTTPError, Timeout) as e:
-        print(e)
+    except Exception as e:
+        print(e.args)
         raise e
 
 # sp_playlists = ["58gtWgHQ99PHtAkCK2dpYt", "3cejj3mmTgiLrvNCr5qz83", "4yMwcuj91F6OJBvK86hMHu"]

@@ -6,4 +6,8 @@
     <color name="SpotifyBlack">#191414</color>
     <color name="SpotifyWhite">#FFFFFF</color>
     <color name="SpotifyGreen">#1D8954</color>
+    <color name="angryColor">#FF0000</color>
+    <color name="happyColor">#FFA500</color>
+    <color name="relaxedColor">#1E90FF</color>
+    <color name="sadColor">#800080</color>
 </resources>

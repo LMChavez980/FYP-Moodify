@@ -44,35 +44,6 @@ public class MainActivity extends AppCompatActivity {
         // Set Default fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new GenerateFrag()).commit();
-
-        /*Button toGen = findViewById(R.id.to_generate);
-        Button toPool = findViewById(R.id.to_pool);
-        Button toStats = findViewById(R.id.to_stats);
-
-        toGen.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-
-            }
-        });
-
-        toPool.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), AddToPool.class);
-                intent.putExtra("TOKEN", auth_token);
-                startActivity(intent);
-            }
-        });
-
-        toStats.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
-
-
     }
 
 
@@ -83,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_generate:
                         selectedFragment = new GenerateFrag();
-                        getSupportActionBar().setTitle(R.string.select_mood_btn);
+                        getSupportActionBar().setTitle(R.string.select_mood_title);
                         break;
 
                     case R.id.nav_add_to_pool:
@@ -93,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_statistics:
                         selectedFragment = new StatisticsFrag();
-                        getSupportActionBar().setTitle(R.string.mood_stats_btn);
+                        getSupportActionBar().setTitle(R.string.mood_stats_title);
                         break;
                 }
 

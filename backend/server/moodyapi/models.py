@@ -16,8 +16,10 @@ class ClassifiedSong(models.Model):
 
 
 class MoodPlaylist(models.Model):
+    moods = [("happy", "happy"), ("sad", "sad"), ("relaxed", "relaxed"), ("angry", "angry")]
     playlist_id = models.CharField(max_length=22, primary_key=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    mood = models.CharField(max_length=8, choices=moods, default="")
 
 
 

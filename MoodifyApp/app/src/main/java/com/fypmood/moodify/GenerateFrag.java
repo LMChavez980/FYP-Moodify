@@ -5,19 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
+import com.fypmood.moodify.models.GeneratePlaylistRequest;
 
-import okhttp3.OkHttpClient;
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GenerateFrag extends Fragment {
 
@@ -35,58 +34,51 @@ public class GenerateFrag extends Fragment {
         angryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callAPI("angry");
+                GeneratePlaylistAPI("angry");
             }
         });
 
         happyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callAPI("happy");
+                GeneratePlaylistAPI("happy");
             }
         });
 
         relaxedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callAPI("relaxed");
+                GeneratePlaylistAPI("relaxed");
             }
         });
 
         sadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callAPI("sad");
+                GeneratePlaylistAPI("sad");
             }
         });
 
         return rootView;
     }
 
-    public void callAPI(String mood){
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.writeTimeout(5, TimeUnit.MINUTES);
-        httpClient.readTimeout(5, TimeUnit.MINUTES);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.220:8000/api/v1/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
+    public void GeneratePlaylistAPI(String mood){
+        RetrofitClient retrofitClient = new RetrofitClient();
 
         MainActivity mainActivity = (MainActivity) getActivity();
         String user_id = mainActivity.mSharedPreferences.getString("USERID", "");
         String auth_token = mainActivity.mSharedPreferences.getString("TOKEN", "");
 
-        ApiService service = retrofit.create(ApiService.class);
-        MoodifyApiResponse apiRequest = new MoodifyApiResponse(user_id, auth_token, mood);
+        MoodifyApiEndpoints service = retrofitClient.getRetrofit().create(MoodifyApiEndpoints.class);
+        GeneratePlaylistRequest apiRequest = new GeneratePlaylistRequest(user_id, auth_token, mood);
 
-        Call<MoodifyApiResponse> apiResponseCall = service.GeneratePlaylist(apiRequest);
-        apiResponseCall.enqueue(new Callback<MoodifyApiResponse>() {
+        Call<GeneratePlaylistRequest> generatePlaylistCall = service.GeneratePlaylist(apiRequest);
+        generatePlaylistCall.enqueue(new Callback<GeneratePlaylistRequest>() {
             @Override
-            public void onResponse(Call<MoodifyApiResponse> call, Response<MoodifyApiResponse> response) {
+            public void onResponse(@NonNull Call<GeneratePlaylistRequest> call, @NonNull Response<GeneratePlaylistRequest> response) {
                 if(response.isSuccessful()){
-                    System.out.println(response.body().getMessage());
+                    System.out.println(response.body().getMessage()+"\n"+response.body().getData());
+                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                 }
                 else
                 {
@@ -99,7 +91,7 @@ public class GenerateFrag extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<MoodifyApiResponse> call, Throwable t) {
+            public void onFailure(Call<GeneratePlaylistRequest> call, Throwable t) {
                 System.out.println(t.toString());
 
             }
