@@ -72,7 +72,6 @@ public class StatisticsFrag extends Fragment {
         //showing the value of the entries, default true if not set
         pieData.setDrawValues(true);
         pieChart.getLegend().setTextColor(Color.WHITE);
-        pieChart.getLegend().set
 
         pieChart.setData(pieData);
         pieChart.invalidate();
