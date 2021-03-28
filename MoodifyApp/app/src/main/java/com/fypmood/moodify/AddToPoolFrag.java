@@ -81,6 +81,7 @@ public class AddToPoolFrag extends Fragment {
                             }
                         }
 
+                        // Check if any playlists or liked tracks selected
                         if(mPlaylistsIds.size() == 0 && !chosen.get(0)){
                             dialog = getAnalyzeDialog();
                             dialog.setMessage("None selected. Please select playlists to analyze.");
@@ -120,6 +121,7 @@ public class AddToPoolFrag extends Fragment {
         return rootView;
     }
 
+    // Alert dialog for Add to Pool process
     private AlertDialog getAnalyzeDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
