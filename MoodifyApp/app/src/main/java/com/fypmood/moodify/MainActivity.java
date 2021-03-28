@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 
+import java.util.Objects;
+
 import kaaes.spotify.webapi.android.SpotifyApi;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         // Set Default fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new GenerateFrag()).commit();
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.select_mood_title);
     }
 
 
@@ -54,17 +57,17 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_generate:
                         selectedFragment = new GenerateFrag();
-                        getSupportActionBar().setTitle(R.string.select_mood_title);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.select_mood_title);
                         break;
 
                     case R.id.nav_add_to_pool:
                         selectedFragment = new AddToPoolFrag();
-                        getSupportActionBar().setTitle(R.string.add_to_pool_btn);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.add_to_pool_title);
                         break;
 
                     case R.id.nav_statistics:
                         selectedFragment = new StatisticsFrag();
-                        getSupportActionBar().setTitle(R.string.mood_stats_title);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.mood_stats_title);
                         break;
                 }
 

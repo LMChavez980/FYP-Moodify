@@ -12,9 +12,14 @@ import androidx.fragment.app.Fragment;
 
 import com.fypmood.moodify.models.StatisticsRequest;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,19 +112,19 @@ public class StatisticsFrag extends Fragment {
         for(String mood: moodSongCounts.keySet()){
             entries.add(new PieEntry(Objects.requireNonNull(moodSongCounts.get(mood)), mood));
             if(mood.equals("angry")) {
-                color.add(ContextCompat.getColor(getContext(), R.color.angryColor));
+                color.add(ContextCompat.getColor(getActivity(), R.color.angryColor));
             }
             else if(mood.equals("happy"))
             {
-                color.add(ContextCompat.getColor(getContext(), R.color.happyColor));
+                color.add(ContextCompat.getColor(getActivity(), R.color.happyColor));
             }
             else if(mood.equals("relaxed"))
             {
-                color.add(ContextCompat.getColor(getContext(), R.color.relaxedColor));
+                color.add(ContextCompat.getColor(getActivity(), R.color.relaxedColor));
             }
             else if(mood.equals("sad"))
             {
-                color.add(ContextCompat.getColor(getContext(), R.color.sadColor));
+                color.add(ContextCompat.getColor(getActivity(), R.color.sadColor));
             }
         }
 
@@ -127,7 +132,8 @@ public class StatisticsFrag extends Fragment {
         PieDataSet pieDataSet = new PieDataSet(entries, "");
 
         // Text size
-        pieDataSet.setValueTextSize(12f);
+        pieDataSet.setValueTextSize(18f);
+        pieChart.setEntryLabelTextSize(18f);
 
         // Set the colors for the pie-chart
         pieDataSet.setColors(color);
@@ -137,11 +143,36 @@ public class StatisticsFrag extends Fragment {
         // Set legend text white
         pieChart.getLegend().setTextColor(Color.WHITE);
 
+        // Put Legend on the top right of screen
+        pieChart.getLegend().setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        pieChart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        pieChart.getLegend().setOrientation(Legend.LegendOrientation.VERTICAL);
+        pieChart.getLegend().setTextSize(15f);
+
+        // Set Hole & Transparent hole colour and size
+        pieChart.setHoleColor(ContextCompat.getColor(getActivity(), R.color.SpotifyBlack));
+        pieChart.setTransparentCircleRadius(50f);
+        pieChart.setHoleRadius(35f);
+
+        // Don't let pie-chart rotate
+        pieChart.setRotationEnabled(false);
+
+        // Hide description
+        pieChart.getDescription().setEnabled(false);
+
+        // Show percentage instead of count
+        pieChart.setUsePercentValues(true);
+
+        // Show percentage symbol beside values
+        pieData.setValueFormatter(new PercentFormatter(pieChart));
+
         // Attach the dataset
         pieChart.setData(pieData);
 
         // Update pie-chart
         pieChart.invalidate();
     }
+
+
 
 }

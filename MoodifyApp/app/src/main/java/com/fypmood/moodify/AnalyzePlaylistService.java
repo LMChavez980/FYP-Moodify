@@ -74,15 +74,6 @@ public class AnalyzePlaylistService extends Service {
     }
 
     public void callAPI(Intent intent, NotificationManager manager){
-        /*OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.writeTimeout(5, TimeUnit.MINUTES);
-        httpClient.readTimeout(5, TimeUnit.MINUTES);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.220:8000/api/v1/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();*/
         RetrofitClient retroFitClient = new RetrofitClient();
 
         MoodifyApiEndpoints service = retroFitClient.getRetrofit().create(MoodifyApiEndpoints.class);

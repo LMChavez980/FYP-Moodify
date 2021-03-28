@@ -4,6 +4,7 @@
     <string name="add_to_pool_btn">Add To Pool</string>
     <string name="select_mood_btn">Generate Playlist</string>
     <string name="mood_stats_btn">Your Statistics</string>
+    <string name="add_to_pool_title">Select Playlists To Analyze</string>
     <string name="select_mood_title">How Are You Feeling?</string>
     <string name="mood_stats_title">Library Mood Breakdown</string>
     <string name="happy">Happy</string>

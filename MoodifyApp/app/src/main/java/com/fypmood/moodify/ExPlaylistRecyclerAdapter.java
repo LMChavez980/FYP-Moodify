@@ -51,6 +51,11 @@ public class ExPlaylistRecyclerAdapter extends RecyclerView.Adapter<ExPlaylistRe
     @Override
     public int getItemCount() { return mPlaylistList.size();}
 
+    public void updataData(List<PlaylistSimple> updatePlaylist) {
+        this.mPlaylistList = updatePlaylist;
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private CheckBox mExistingPlaylist;
 
