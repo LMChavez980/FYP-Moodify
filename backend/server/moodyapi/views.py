@@ -125,7 +125,7 @@ class AnalyzeView(views.APIView):
 
                 new_tracks_df["music mood"] = musicmood.mood(new_tracks_df[test_features])
 
-                new_tracks_df.to_excel("C:\\Users\\rasen\PythonML\\Testing\\sadbois.xlsx")
+                #new_tracks_df.to_excel("C:\\Users\\rasen\PythonML\\Testing\\sadbois.xlsx")
 
                 new_track_ids = list(new_tracks_df["id"].values)
                 new_track_names = list(new_tracks_df["name"].values)
@@ -133,12 +133,12 @@ class AnalyzeView(views.APIView):
                 new_track_moods = list(new_tracks_df["music mood"].values)
 
                 # Create bulk insert for new classified songs
-                #new_tracks_inserts = []
-                #for i in range(len(new_track_ids)):
-                #    new_tracks_inserts.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
-                #                                           artists=new_track_artists[i], mood=new_track_moods[i]))
+                new_tracks_inserts = []
+                for i in range(len(new_track_ids)):
+                    new_tracks_inserts.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
+                                                           artists=new_track_artists[i], mood=new_track_moods[i]))
 
-                #ClassifiedSong.objects.bulk_create(new_tracks_inserts, ignore_conflicts=True)
+                ClassifiedSong.objects.bulk_create(new_tracks_inserts, ignore_conflicts=True)
 
                 print(new_tracks_df[["name", "artists", "lyrics sentiment", "music mood"]])
                 # print(new_tracks_df[["name", "artists", "music mood"]])
@@ -158,8 +158,8 @@ class AnalyzeView(views.APIView):
                     }
                 else:
                     # Add the newly analysed songs to user_songs
-                    #current_user.user_songs.extend(new_track_ids)
-                    #current_user.save()
+                    current_user.user_songs.extend(new_track_ids)
+                    current_user.save()
                     return_data = {
                         "error": "0",
                         "message": "Added songs to database and user pool"
