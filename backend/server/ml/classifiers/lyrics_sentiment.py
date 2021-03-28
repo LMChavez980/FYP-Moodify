@@ -212,7 +212,7 @@ class LyricsSentiment:
         # Remove any double spaces
         lyrics = ' '.join(lem_lyrics)
 
-        return lyrics
+        return lyrics.strip()
 
     def sentiment(self, lyrics_df):
         predictions = self.senti_clf.predict(lyrics_df)

@@ -8,6 +8,7 @@ from spotipy.exceptions import SpotifyException
 from requests.exceptions import HTTPError, Timeout
 from moodyapi.models import User, ClassifiedSong, MoodPlaylist
 import helpers.dbhelper as dbhelper
+from timeit import default_timer as timer
 
 
 # Create your views here.
@@ -29,8 +30,6 @@ class AnalyzeView(views.APIView):
             pl_ids = request.data.get('playlist_ids')
             user_id = request.data.get('user_id')
 
-            print(request.data)
-
             if saved_tracks == "1":
                 saved_tracks = True
             else:
@@ -45,13 +44,23 @@ class AnalyzeView(views.APIView):
             # Get tracks of playlist
             pl_tracks = spotify.get_tracks(pl_ids, saved_tracks, token)
 
+            pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
+
+            # Remove any rows where song lyrics were not found
+            # Check for any songs that have been analysed before
+            #   - if yes skip ML process and get songs that have been analysed that are part of tracks
+            #   - If no then go to ML process and add new songs to ClassifiedSongs table
+            #   - Any existing or new songs add to user songs
+            is_empty, new_tracks_df, existing_tracks = dbhelper.check_empty(pl_tracks_df, user_tracks)
+
+
             # Get audio features
-            pl_tracks = spotify.get_audio_data(pl_tracks)
+            #pl_tracks = spotify.get_audio_data(pl_tracks)
 
             # Get lyrics
-            pl_tracks = lyrics.get_lyrics(pl_tracks)
+            #pl_tracks = lyrics.get_lyrics(pl_tracks)
 
-            pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
+            #pl_tracks_df = pd.DataFrame.from_dict(pl_tracks)
 
             # pl_tracks_df = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3",
             #                                    "dummy_song_id_4"], "lyrics": ["", "", "", ""]})
@@ -74,14 +83,32 @@ class AnalyzeView(views.APIView):
             #   - if yes skip ML process and get songs that have been analysed that are part of tracks
             #   - If no then go to ML process and add new songs to ClassifiedSongs table
             #   - Any existing or new songs add to user songs
-            is_empty, new_tracks_df, existing_tracks = dbhelper.check_empty(pl_tracks_df, user_tracks)
+            #is_empty, new_tracks_df, existing_tracks = dbhelper.check_empty(pl_tracks_df, user_tracks)
 
             if (not is_empty) and (new_tracks_df is not None):
+                pl_tracks = new_tracks_df.to_dict('list')
+
+                print(pl_tracks)
+
+                # Get audio features
+                pl_tracks = spotify.get_audio_data(pl_tracks)
+
+                # Get lyrics
+                pl_tracks = lyrics.get_lyrics(pl_tracks)
+
+                new_tracks_df = pd.DataFrame.from_dict(pl_tracks)
+                
+                # Remove songs without lyrics
+                new_tracks_df = new_tracks_df[new_tracks_df.lyrics != ""]
+                
                 # Initialize the sentiment analyzer
                 senti_analysis = lyrics_sentiment.LyricsSentiment()
 
                 # Preprocess the lyrics - expand contractions, remove punctuations etc.
                 new_tracks_df["lyrics"].apply(senti_analysis.preprocess)
+                
+                # Remove songs that have no lyrics after pre-processing
+                new_tracks_df = new_tracks_df[new_tracks_df.lyrics != ""]
 
                 # Get sentiment for the lyrics
                 new_tracks_df["lyrics sentiment"] = senti_analysis.sentiment(new_tracks_df["lyrics"])
@@ -97,6 +124,8 @@ class AnalyzeView(views.APIView):
                                  "valence binned", "tempo binned"]
 
                 new_tracks_df["music mood"] = musicmood.mood(new_tracks_df[test_features])
+
+                new_tracks_df.to_excel("C:\\Users\\rasen\PythonML\\Testing\\sadbois.xlsx")
 
                 new_track_ids = list(new_tracks_df["id"].values)
                 new_track_names = list(new_tracks_df["name"].values)
@@ -240,7 +269,7 @@ class GeneratePlaylist(views.APIView):
         except Exception as e:
             print(e.args)
             return_data = {
-                "error": "1",
+                "error": "GEN001",
                 "message": "An error has occured"
             }
 

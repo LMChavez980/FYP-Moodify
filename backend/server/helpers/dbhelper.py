@@ -18,7 +18,7 @@ def check_empty(tracks_df, user_analysed):
     print(tracks_df)
     print(user_analysed)
     # Remove songs with no lyrics
-    tracks_df = tracks_df[tracks_df.lyrics != ""]
+    #tracks_df = tracks_df[tracks_df.lyrics != ""]
 
     # Check if there are tracks remaining
     if not tracks_df.empty:
@@ -58,7 +58,7 @@ def check_empty(tracks_df, user_analysed):
                 print("Test 2 Exit: No new tracks to assign")
                 return False, None, None
 
-    print("Test 1 Exit: No Lyrics")
+    #print("Test 1 Exit: No Lyrics")
     return True, None, None
 
 """

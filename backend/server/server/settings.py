@@ -29,8 +29,8 @@ DEBUG = True
 local_test = []
 android_local = ['192.168.0.220']
 
-#ALLOWED_HOSTS = local_test
-ALLOWED_HOSTS = android_local
+ALLOWED_HOSTS = local_test
+#ALLOWED_HOSTS = android_local
 
 
 # Application definition

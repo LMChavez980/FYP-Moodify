@@ -69,6 +69,7 @@ def musixmatch_lyrics(song_title, song_artist):
         head = len(match['message']['body']['lyrics']['lyrics_body'])
         lyrics = match['message']['body']['lyrics']['lyrics_body'][:head - tail]
         print("Found Lyrics!")
+
         return lyrics
     else:
         return None
@@ -123,4 +124,3 @@ def get_lyrics(tracks_dict):
     tracks_dict["lyrics"] = lyrics_list
 
     return tracks_dict
-
