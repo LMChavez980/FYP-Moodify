@@ -9,16 +9,21 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.IBinder;
+import android.provider.Telephony;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 
 import com.fypmood.moodify.models.AnalyzePlaylistRequest;
 
 import java.util.ArrayList;
+
+import static com.fypmood.moodify.MainActivity.dialog;
 
 public class AnalyzePlaylistService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
@@ -95,11 +100,15 @@ public class AnalyzePlaylistService extends Service {
                     System.out.println("Response: "+response.body());
                     Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                             .setContentTitle("Moodify Add To Pool")
-                            .setContentText("Tracks Successfully added to pool")
+                            .setContentText(response.body().getMessage())
                             .setSmallIcon(R.drawable.ic_launcher_foreground)
                             .setContentIntent(pendingIntent)
                             .build();
                     manager.notify(endAnalysisId, notification);
+                    dialog.setMessage(response.body().getMessage());
+                    if(!dialog.isShowing()){
+                        dialog.show();
+                    }
                 }
                 else
                 {
@@ -111,6 +120,10 @@ public class AnalyzePlaylistService extends Service {
                             .setContentIntent(pendingIntent)
                             .build();
                     manager.notify(endAnalysisId, notification);
+                    dialog.setMessage("An Error Occured - Please Try Again");
+                    if(!dialog.isShowing()){
+                        dialog.show();
+                    }
                 }
 
                 stopForeground(true);
@@ -130,6 +143,10 @@ public class AnalyzePlaylistService extends Service {
                         .setContentIntent(pendingIntent)
                         .build();
                 manager.notify(endAnalysisId, notification);
+                dialog.setMessage("An Error Occured - Please Try Again");
+                if(!dialog.isShowing()){
+                    dialog.show();
+                }
                 stopForeground(true);
             }
         });

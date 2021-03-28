@@ -1,5 +1,6 @@
 package com.fypmood.moodify;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +29,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static com.fypmood.moodify.MainActivity.dialog;
+
 public class AddToPoolFrag extends Fragment {
 
     private ExPlaylistRecyclerAdapter mExPlaylistAdapter;
@@ -42,14 +46,17 @@ public class AddToPoolFrag extends Fragment {
 
         MainActivity mainActivity = (MainActivity) getActivity();
 
+        // Get auth token from shared preferences
         String auth_token = mainActivity.mSharedPreferences.getString("TOKEN", "");
 
         RecyclerView mExPlaylistRecyclerView = rootView.findViewById(R.id.playlistRecyclerView);
         mExPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        // Initialise spotify service
         api.setAccessToken(auth_token);
         SpotifyService spotify = api.getService();
 
+        // Get user playlists
         spotify.getMyPlaylists(new Callback<Pager<PlaylistSimple>>() {
             @Override
             public void success(Pager<PlaylistSimple> playlistSimplePager, Response response) {
@@ -73,22 +80,31 @@ public class AddToPoolFrag extends Fragment {
                                 mPlaylistsIds.add(id);
                             }
                         }
-                        Toast.makeText(getContext(), mPlaylistsIds.toString(), Toast.LENGTH_LONG).show();
-                        Intent serviceIntent = new Intent(mainActivity, AnalyzePlaylistService.class);
-                        if(chosen.get(0)){
-                            serviceIntent.putExtra("saved_tracks", "1");
+
+                        if(mPlaylistsIds.size() == 0 && !chosen.get(0)){
+                            dialog = getAnalyzeDialog();
+                            dialog.setMessage("None selected. Please select playlists to analyze.");
+                            dialog.show();
                         }
-                        else
-                        {
-                            serviceIntent.putExtra("saved_tracks", "0");
+                        else{
+                            Intent serviceIntent = new Intent(mainActivity, AnalyzePlaylistService.class);
+                            if(chosen.get(0)){
+                                serviceIntent.putExtra("saved_tracks", "1");
+                            }
+                            else
+                            {
+                                serviceIntent.putExtra("saved_tracks", "0");
+                            }
+                            serviceIntent.putStringArrayListExtra("pl_ids", mPlaylistsIds);
+                            serviceIntent.putExtra("content", "Analyzing Your Playlists");
+                            serviceIntent.putExtra("user_id", mainActivity.mSharedPreferences.getString("USERID", ""));
+                            serviceIntent.putExtra("auth_token", mainActivity.mSharedPreferences.getString("TOKEN", ""));
+                            dialog = getAnalyzeDialog();
+                            dialog.show();
+                            //mainActivity.startForegroundService(serviceIntent);
+                            Log.i("ATP", "Service Started");
+
                         }
-                        serviceIntent.putStringArrayListExtra("pl_ids", mPlaylistsIds);
-                        serviceIntent.putExtra("content", "Analyzing Your Playlists");
-                        serviceIntent.putExtra("user_id", mainActivity.mSharedPreferences.getString("USERID", ""));
-                        serviceIntent.putExtra("auth_token", mainActivity.mSharedPreferences.getString("TOKEN", ""));
-                        mainActivity.startForegroundService(serviceIntent);
-                        Toast.makeText(getContext(), "Service Started", Toast.LENGTH_LONG).show();
-                        Log.i("ATP", "Service Started");
                     }
 
                 });
@@ -102,6 +118,16 @@ public class AddToPoolFrag extends Fragment {
         });
 
         return rootView;
+    }
+
+    private AlertDialog getAnalyzeDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setMessage("Analyzing your selected playlists: This may take some time so feel free to browse other apps!")
+                .setNeutralButton("Close", (dialog, which) -> Log.i("ATP", "Closing ATP dialog"))
+                .setTitle(R.string.app_name);
+
+        return builder.create();
     }
 
 }

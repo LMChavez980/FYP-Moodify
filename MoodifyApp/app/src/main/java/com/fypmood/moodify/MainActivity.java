@@ -10,6 +10,7 @@ import android.view.Window;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1337;
     private SpotifyAppRemote mSpotifyAppRemote;
     SharedPreferences mSharedPreferences;
+    static AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
