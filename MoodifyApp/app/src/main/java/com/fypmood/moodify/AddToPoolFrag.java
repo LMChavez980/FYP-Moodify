@@ -102,7 +102,7 @@ public class AddToPoolFrag extends Fragment {
                             serviceIntent.putExtra("auth_token", mainActivity.mSharedPreferences.getString("TOKEN", ""));
                             dialog = getAnalyzeDialog();
                             dialog.show();
-                            //mainActivity.startForegroundService(serviceIntent);
+                            mainActivity.startForegroundService(serviceIntent);
                             Log.i("ATP", "Service Started");
 
                         }

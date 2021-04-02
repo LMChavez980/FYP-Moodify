@@ -27,7 +27,7 @@ SECRET_KEY = 'j5^i+_%xal221dg^&*zx8u9u)xlxghi6h*6b#)2(qt=+3eir(e'
 DEBUG = True
 
 local_test = []
-android_local = ['192.168.0.220']
+android_local = ['192.168.0.220', '127.0.0.1']
 
 #ALLOWED_HOSTS = local_test
 ALLOWED_HOSTS = android_local

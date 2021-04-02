@@ -15,12 +15,10 @@ def check_user_new(user_id):
 
 
 def check_empty(tracks_df, user_analysed):
-    print(tracks_df)
-    print(user_analysed)
-    # Remove songs with no lyrics
-    #tracks_df = tracks_df[tracks_df.lyrics != ""]
+    #print(tracks_df)
+    #print(user_analysed)
 
-    # Check if there are tracks remaining
+    # Check if there are tracks is empty
     if not tracks_df.empty:
         moodify_tracks = ClassifiedSong.objects.all().values_list('song_id', flat=True)
 
@@ -29,7 +27,7 @@ def check_empty(tracks_df, user_analysed):
 
         print("Analysed:", analysed_tracks['id'])
 
-        # If no analysed songs in the database or if all the tracks are new - assumes user has none too
+        # If no analysed songs in the database or if all the tracks are new
         # Go through classification for all tracks
         if moodify_tracks.count() == 0 or analysed_tracks.empty:
             print("Test 3: All new tracks")
@@ -58,7 +56,6 @@ def check_empty(tracks_df, user_analysed):
                 print("Test 2 Exit: No new tracks to assign")
                 return False, None, None
 
-    #print("Test 1 Exit: No Lyrics")
     return True, None, None
 
 """
