@@ -56,6 +56,8 @@ public class AddToPoolFrag extends Fragment {
         api.setAccessToken(auth_token);
         SpotifyService spotify = api.getService();
 
+        FloatingActionButton analyzeFab = rootView.findViewById(R.id.sendToAnalyze);
+
         // Get user playlists
         spotify.getMyPlaylists(new Callback<Pager<PlaylistSimple>>() {
             @Override
@@ -65,7 +67,6 @@ public class AddToPoolFrag extends Fragment {
                 mExPlaylistAdapter = new ExPlaylistRecyclerAdapter(getContext(), myPlaylists);
                 mExPlaylistRecyclerView.setAdapter(mExPlaylistAdapter);
 
-                FloatingActionButton analyzeFab = rootView.findViewById(R.id.sendToAnalyze);
                 analyzeFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -115,6 +116,10 @@ public class AddToPoolFrag extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 Log.e("ATP", "Error:"+error.getMessage());
+                dialog = getAnalyzeDialog();
+                dialog.setMessage(error.getMessage());
+                dialog.show();
+
             }
         });
 

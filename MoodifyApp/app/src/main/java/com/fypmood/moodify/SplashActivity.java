@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.RequestQueue;
@@ -33,6 +34,7 @@ public class SplashActivity extends AppCompatActivity
     private SpotifyService service;
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor editor;
+    private AlertDialog splash_dialog;
 
 
     @Override
@@ -78,10 +80,15 @@ public class SplashActivity extends AppCompatActivity
                 case ERROR:
                     //handle error response
                     Log.e("SPLASH", "FAILED TO GET AUTH TOKEN");
+                    splash_dialog = getSplashDialog();
+                    splash_dialog.show();
                     break;
 
                 default:
                     Log.d("SPLASH", "Cancelled Flow?");
+                    splash_dialog = getSplashDialog();
+                    splash_dialog.setMessage("Unable to connect to Spotify");
+                    splash_dialog.show();
             }
         }
 
@@ -94,7 +101,7 @@ public class SplashActivity extends AppCompatActivity
             @Override
             public void success(UserPrivate userPrivate, Response response) {
                 Log.d("SPLASH", "current user id: ".concat(userPrivate.id));
-                editor.putString("USERID", userPrivate.id);
+                editor.putString("USERID", userPrivate.id).commit();
             }
 
             @Override
@@ -102,6 +109,17 @@ public class SplashActivity extends AppCompatActivity
                 Log.d("SPLASH", "Unable to get current user id");
             }
         });
+    }
+
+    // Alert dialog for failed token acquisition
+    private AlertDialog getSplashDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Could not get access token. Please restart the application")
+                .setNeutralButton("Close", (dialog, which) -> Log.i("ATP", "Closing Splash dialog"))
+                .setTitle(R.string.app_name);
+
+        return builder.create();
     }
 
 

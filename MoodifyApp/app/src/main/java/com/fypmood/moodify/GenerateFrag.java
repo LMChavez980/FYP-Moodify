@@ -93,20 +93,30 @@ public class GenerateFrag extends Fragment {
                 if(response.isSuccessful()){
                     System.out.println(response.body().getMessage()+"\n"+response.body().getData());
                     String resp_msg = response.body().getMessage();
-                    String new_pl_id = response.body().getData().get("new_playlist_id");
-                    dialog = getGenerateResultDialog(resp_msg, new_pl_id, true);
-                    dialog.show();
+                    if(response.body().getData() != null) {
+                        String new_pl_id = response.body().getData().get("new_playlist_id");
+                        dialog = getGenerateResultDialog(resp_msg, new_pl_id, true);
+                        dialog.show();
+                    }
+                    else{
+                        System.out.println(response.body().getErr_code()+": "+response.body().getMessage());
+                        resp_msg = response.body().getErr_code()+": "+response.body().getMessage();
+                        dialog = getGenerateResultDialog(resp_msg, null, false);
+                        dialog.show();
+                    }
                 }
                 else
                 {
                     try {
                         System.out.println(response.errorBody().string());
-                        String resp_msg = response.body().getMessage();
+                        String resp_msg = response.body().getErr_code()+": "+response.body().getMessage();
                         dialog = getGenerateResultDialog(resp_msg, null, false);
                         dialog.show();
 
                     } catch (IOException e) {
                         e.printStackTrace();
+                        dialog = getGenerateResultDialog("An Error Occured - Please Try Again", null, false);
+                        dialog.show();
                     }
                 }
             }
@@ -150,14 +160,16 @@ public class GenerateFrag extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             Log.i("GEN", "Open Playlist Spotify");
                             if(checkSpotifyInstall()){
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(Uri.parse("spotify:playlist:"+new_id));
-                                intent.putExtra(Intent.EXTRA_REFERRER,
+                                Intent openSpotApp = new Intent(Intent.ACTION_VIEW);
+                                openSpotApp.setData(Uri.parse("spotify:playlist:"+new_id));
+                                openSpotApp.putExtra(Intent.EXTRA_REFERRER,
                                         Uri.parse("android-app://" + getActivity().getPackageName()));
-                                startActivity(intent);
+                                startActivity(openSpotApp);
                             }
                             else{
-                                builder.setMessage("Spotify not installed");
+                                Log.i("GEN", "Spotify Not Installed");
+                                Intent openSpotWeb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://open.spotify.com/playlist/"+new_id));
+                                startActivity(openSpotWeb);
                             }
 
                         }

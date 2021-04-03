@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -31,6 +32,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.fypmood.moodify.MainActivity.dialog;
+
 public class StatisticsFrag extends Fragment {
     PieChart pieChart;
     Map<String, Integer> moodSongCounts;
@@ -41,6 +44,8 @@ public class StatisticsFrag extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         pieChart = rootView.findViewById(R.id.piechart);
+        pieChart.setNoDataText("Getting your library mood statistics....");
+        pieChart.setNoDataTextColor(ContextCompat.getColor(getActivity(), R.color.SpotifyWhite));
 
         moodSongCounts = null;
 
@@ -76,9 +81,17 @@ public class StatisticsFrag extends Fragment {
                 {
                     Log.e("STATS", "Call Unsuccessful - Couldn't get statistics");
                     try {
+                        pieChart.setNoDataText("Library mood data unavailable");
+                        pieChart.invalidate();
                         System.out.println(response.errorBody().string());
+                        dialog = getStatisticsDialog();
+                        dialog.show();
                     } catch (IOException e) {
                         e.printStackTrace();
+                        pieChart.setNoDataText("Library mood data unavailable");
+                        pieChart.invalidate();
+                        dialog = getStatisticsDialog();
+                        dialog.show();
                     }
                 }
 
@@ -87,8 +100,12 @@ public class StatisticsFrag extends Fragment {
             @Override
             public void onFailure(Call<StatisticsRequest> call, Throwable t) {
                 Log.e("STATS", "Call Failed - Couldn't get statistics");
+                pieChart.setNoDataText("Library mood data unavailable");
+                pieChart.invalidate();
                 System.out.println(t.toString());
                 System.out.println(t.getMessage());
+                dialog = getStatisticsDialog();
+                dialog.show();
 
             }
         });
@@ -101,6 +118,9 @@ public class StatisticsFrag extends Fragment {
         // Return if no data
         if(moodSongCounts == null)
         {
+            Log.i("STAT", "Data returned empty");
+            pieChart.setNoDataText("Library mood data unavailable");
+            pieChart.invalidate();
             return;
         }
 
@@ -173,6 +193,15 @@ public class StatisticsFrag extends Fragment {
         pieChart.invalidate();
     }
 
+    // Alert dialog for Statistics process
+    private AlertDialog getStatisticsDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+        builder.setMessage("Could not load your statistics. Please try again")
+                .setNeutralButton("Close", (dialog, which) -> Log.i("STAT", "Closing STAT dialog"))
+                .setTitle(R.string.app_name);
+
+        return builder.create();
+    }
 
 }

@@ -9,14 +9,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.IBinder;
-import android.provider.Telephony;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 
 import com.fypmood.moodify.models.AnalyzePlaylistRequest;
@@ -62,7 +59,7 @@ public class AnalyzePlaylistService extends Service {
 
         startForeground(startAnalysisId, notification);
 
-        callAPI(intent, manager);
+        AnalyzeAPI(intent, manager);
 
         return START_NOT_STICKY;
     }
@@ -78,7 +75,7 @@ public class AnalyzePlaylistService extends Service {
         return null;
     }
 
-    public void callAPI(Intent intent, NotificationManager manager){
+    public void AnalyzeAPI(Intent intent, NotificationManager manager){
         RetrofitClient retroFitClient = new RetrofitClient();
 
         MoodifyApiEndpoints service = retroFitClient.getRetrofit().create(MoodifyApiEndpoints.class);

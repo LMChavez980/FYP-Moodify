@@ -81,14 +81,14 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
+DJANGO_DEFAULT_SQLITE = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
-DATABASES = {
+LOCAL_DEV_POSTGRE = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'moodifydev',
@@ -98,6 +98,19 @@ DATABASES = {
         'PORT': ''
     }
 }
+
+MANAGED_PROD_POSTGRE = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'moodifyprod',
+        'USER': 'moodifyproduser',
+        'PASSWORD': 'qu09a833f7t4dqvq',
+        'HOST': 'db-postgresql-lon1-78284-do-user-8726940-0.b.db.ondigitalocean.com',
+        'PORT': '25060'
+    }
+}
+
+DATABASES = LOCAL_DEV_POSTGRE
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

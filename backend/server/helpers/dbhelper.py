@@ -6,17 +6,35 @@ import pandas as pd
 """
 
 
+"""
+Function to check if user is already in the database
+Parameters: user id
+Returns: NA (raises exception if the passed user_id is an empty string)
+"""
+
+
 def check_user_new(user_id):
     # If the user is new add them to the database
     # Else if user exists already, get their tracks
-    if not User.objects.filter(user_id=user_id).exists() and user_id.strip() != "":
+    if user_id.strip() == "":
+        raise Exception('NEW001', 'Blank user')
+
+    if not User.objects.filter(user_id=user_id).exists():
         new_user = User(user_id=user_id, user_songs=[])
         new_user.save()
 
 
+"""
+Function to check if the songs to classify already exist in the database
+Parameters: DataFrame of tracks to classify, list of user analysed tracks
+Returns: boolean status for DataFrame, DataFrame or None for tracks to classify, DataFrame or None for classified tracks
+to assign to the user
+"""
+
+
 def check_empty(tracks_df, user_analysed):
-    #print(tracks_df)
-    #print(user_analysed)
+    # print(tracks_df)
+    # print(user_analysed)
 
     # Check if there are tracks is empty
     if not tracks_df.empty:
@@ -25,24 +43,30 @@ def check_empty(tracks_df, user_analysed):
         # Get previously analysed tracks in database
         analysed_tracks = tracks_df[tracks_df.id.isin(moodify_tracks)]
 
-        print("Analysed:", analysed_tracks['id'])
+        # print("Analysed:", analysed_tracks['id'])
 
         # If no analysed songs in the database or if all the tracks are new
         # Go through classification for all tracks
         if moodify_tracks.count() == 0 or analysed_tracks.empty:
-            print("Test 3: All new tracks")
+            print("All new tracks")
             return False, tracks_df, None
         else:
             # Get tracks not in database
             new_tracks = tracks_df[~tracks_df.id.isin(moodify_tracks)]
 
-            print("moodify new tracks:", new_tracks['id'])
+            # print("moodify new tracks:", new_tracks['id'])
 
             # Get tracks that have been analysed but not been assigned to user
             user_new_tracks = analysed_tracks[~analysed_tracks.id.isin(user_analysed)]
 
-            print("user new tracks:", user_new_tracks['id'])
+            # print("user new tracks:", user_new_tracks['id'])
 
+            # if all the tracks to classify have been analysed before but have not been assigned to the user
+            # if some of the tracks to classify have been analysed before have been assigned to the user
+            # but there are new tracks to classify
+            # if there are new tracks that haven't been classified as well as track that have been classified
+            # but not assigned to the user
+            # If all the tracks to classify have been classified and have been assigned to user
             if not user_new_tracks.empty and new_tracks.empty:
                 print("Test 5 Exit: All analysed but not assigned to user")
                 return False, None, user_new_tracks
@@ -57,6 +81,7 @@ def check_empty(tracks_df, user_analysed):
                 return False, None, None
 
     return True, None, None
+
 
 """
 test_df1 = pd.DataFrame({"id": ["dummy_song_id_1", "dummy_song_id_2", "dummy_song_id_3",
