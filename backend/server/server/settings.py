@@ -81,6 +81,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# Default django sqlite database
 DJANGO_DEFAULT_SQLITE = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -88,6 +89,7 @@ DJANGO_DEFAULT_SQLITE = {
     }
 }
 
+# Local development postgresql
 LOCAL_DEV_POSTGRE = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -99,6 +101,19 @@ LOCAL_DEV_POSTGRE = {
     }
 }
 
+# DigitalOcean local test postgresql
+DO_LOCAL_TEST_POSTGRE = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'moodifyprodtest',
+        'USER': 'moodprodtuser',
+        'PASSWORD': 'mooditest',
+        'HOST': 'localhost',
+        'PORT': ''
+    }
+}
+
+# Production managed postgresql
 MANAGED_PROD_POSTGRE = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -110,7 +125,8 @@ MANAGED_PROD_POSTGRE = {
     }
 }
 
-DATABASES = LOCAL_DEV_POSTGRE
+
+DATABASES = DO_LOCAL_TEST_POSTGRE
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
