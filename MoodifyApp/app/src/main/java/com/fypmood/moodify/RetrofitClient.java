@@ -9,7 +9,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private OkHttpClient.Builder httpClient;
     private Retrofit retrofit;
-    private String BASE_URL = "http://192.168.0.220:8000/api/v1/";
+    private String DEV_BASE_URL = "http://192.168.0.220:8000/api/v1/";
+    private String PROD_BASE_URL = "http://64.227.44.241:8000/api/v1/";
     private int timeout_time = 5;
 
     public RetrofitClient(){
@@ -18,7 +19,7 @@ public class RetrofitClient {
         httpClient.readTimeout(timeout_time, TimeUnit.MINUTES);
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(PROD_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
                 .build();

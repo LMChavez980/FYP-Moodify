@@ -17,7 +17,8 @@
             android:enabled="true"
             android:exported="false">
         </service>
-        <activity android:name="com.fypmood.moodify.SplashActivity">
+        <activity android:name="com.fypmood.moodify.SplashActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
