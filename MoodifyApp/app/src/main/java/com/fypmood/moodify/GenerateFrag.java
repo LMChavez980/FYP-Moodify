@@ -21,6 +21,8 @@ import com.fypmood.moodify.models.GeneratePlaylistRequest;
 
 import java.io.IOException;
 
+import javax.security.auth.login.LoginException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -90,7 +92,11 @@ public class GenerateFrag extends Fragment {
             @Override
             public void onResponse(@NonNull Call<GeneratePlaylistRequest> call, @NonNull Response<GeneratePlaylistRequest> response) {
                 dialog.dismiss(); // close spinner dialog
+                // If response is successful inform using dialog
+                // While a response may be successful, an error may have occurred in Moodify process
+                // If so show the Moodify error to user
                 if(response.isSuccessful()){
+                    Log.i("GEN", "Successful Response");
                     System.out.println(response.body().getMessage()+"\n"+response.body().getData());
                     String resp_msg = response.body().getMessage();
                     if(response.body().getData() != null) {
@@ -98,7 +104,8 @@ public class GenerateFrag extends Fragment {
                         dialog = getGenerateResultDialog(resp_msg, new_pl_id, true);
                         dialog.show();
                     }
-                    else{
+                    else {
+                        Log.i("GEN", "Unsuccessful Response");
                         System.out.println(response.body().getErr_code()+": "+response.body().getMessage());
                         resp_msg = response.body().getErr_code()+": "+response.body().getMessage();
                         dialog = getGenerateResultDialog(resp_msg, null, false);
@@ -108,6 +115,7 @@ public class GenerateFrag extends Fragment {
                 else
                 {
                     try {
+                        Log.e("GEN", "There was an error in getting a response");
                         System.out.println(response.errorBody().string());
                         String resp_msg = response.body().getErr_code()+": "+response.body().getMessage();
                         dialog = getGenerateResultDialog(resp_msg, null, false);
@@ -115,17 +123,19 @@ public class GenerateFrag extends Fragment {
 
                     } catch (IOException e) {
                         e.printStackTrace();
-                        dialog = getGenerateResultDialog("An Error Occured - Please Try Again", null, false);
+                        dialog = getGenerateResultDialog("ERROR: Unsucessful Response", null, false);
                         dialog.show();
                     }
                 }
             }
 
+            // If call cannot connect to API
             @Override
             public void onFailure(Call<GeneratePlaylistRequest> call, Throwable t) {
                 dialog.dismiss(); // close spinner dialog
                 System.out.println(t.toString());
-                dialog = getGenerateResultDialog("An Error Occured - Please Try Again", null, false);
+                Log.e("GEN", "Failed to generate playlist or there was an error in the process");
+                dialog = getGenerateResultDialog("ERROR: Failed to generate playlist. Could not connect to server", null, false);
                 dialog.show();
 
             }

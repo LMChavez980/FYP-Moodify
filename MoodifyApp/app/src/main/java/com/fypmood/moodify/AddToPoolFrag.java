@@ -115,7 +115,7 @@ public class AddToPoolFrag extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("ATP", "Error:"+error.getMessage());
+                Log.e("ATP", "ERROR:"+error.getMessage());
                 dialog = getAnalyzeDialog();
                 dialog.setMessage(error.getMessage());
                 dialog.show();
@@ -131,7 +131,12 @@ public class AddToPoolFrag extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setMessage("Analyzing your selected playlists: This may take some time so feel free to browse other apps!")
-                .setNeutralButton("Close", (dialog, which) -> Log.i("ATP", "Closing ATP dialog"))
+                .setNeutralButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i("ATP", "Closing ATP dialog");
+                    }
+                })
                 .setTitle(R.string.app_name);
 
         return builder.create();

@@ -69,7 +69,9 @@ public class StatisticsFrag extends Fragment {
         statisticsRequestCall.enqueue(new Callback<StatisticsRequest>() {
             @Override
             public void onResponse(Call<StatisticsRequest> call, Response<StatisticsRequest> response) {
+                Log.i("STATS", "Call successful");
                 if(response.isSuccessful()){
+                    Log.i("STATS", "Response Successful");
                     System.out.println(response.body().getMessage());
                     System.out.println(response.body().getData());
                     moodSongCounts = response.body().getData();
@@ -79,7 +81,7 @@ public class StatisticsFrag extends Fragment {
                 }
                 else
                 {
-                    Log.e("STATS", "Call Unsuccessful - Couldn't get statistics");
+                    Log.e("STATS", "Response Unsuccessful - Couldn't get statistics");
                     try {
                         pieChart.setNoDataText("Library mood data unavailable");
                         pieChart.invalidate();
@@ -197,7 +199,7 @@ public class StatisticsFrag extends Fragment {
     private AlertDialog getStatisticsDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setMessage("Could not load your statistics. Please try again")
+        builder.setMessage("ERROR: Could not load your statistics. Please try again")
                 .setNeutralButton("Close", (dialog, which) -> Log.i("STAT", "Closing STAT dialog"))
                 .setTitle(R.string.app_name);
 

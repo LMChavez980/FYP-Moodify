@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +35,8 @@ public class AnalyzePlaylistService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
+        Log.i("APS", "In service");
+
         String contentExtra = intent.getStringExtra("content");
 
         NotificationChannel serviceChannel = new NotificationChannel(
@@ -94,6 +97,7 @@ public class AnalyzePlaylistService extends Service {
                 PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
                         0, notificationIntent, 0);
                 if (response.isSuccessful()){
+                    Log.i("APS", "Sucessful Response");
                     System.out.println("Response: "+response.body());
                     Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                             .setContentTitle("Moodify Add To Pool")
@@ -109,20 +113,22 @@ public class AnalyzePlaylistService extends Service {
                 }
                 else
                 {
+                    Log.e("APS", "ERROR: Unsucessful Response");
                     System.out.println("Failed: "+response.errorBody());
                     Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                             .setContentTitle("Moodify Add To Pool")
-                            .setContentText("An Error Occured - Please Try Again")
+                            .setContentText("There was an error in analysing process - Please try again")
                             .setSmallIcon(R.drawable.ic_launcher_foreground)
                             .setContentIntent(pendingIntent)
                             .build();
                     manager.notify(endAnalysisId, notification);
-                    dialog.setMessage("An Error Occured - Please Try Again");
+                    dialog.setMessage("ERROR: There was an error in analysing process - Please try again");
                     if(!dialog.isShowing()){
                         dialog.show();
                     }
                 }
 
+                Log.i("APS", "Stopping Service on success");
                 stopForeground(true);
 
             }
@@ -135,15 +141,16 @@ public class AnalyzePlaylistService extends Service {
                         0, notificationIntent, 0);
                 Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                         .setContentTitle("Moodify Add To Pool")
-                        .setContentText("An Error Occured - Please Try Again")
+                        .setContentText("There was an error in analysing process - Please try again")
                         .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentIntent(pendingIntent)
                         .build();
                 manager.notify(endAnalysisId, notification);
-                dialog.setMessage("An Error Occured - Please Try Again");
+                dialog.setMessage("There was an error in analysing process - Please try again");
                 if(!dialog.isShowing()){
                     dialog.show();
                 }
+                Log.i("APS", "Stopping Service on Failure");
                 stopForeground(true);
             }
         });
