@@ -38,26 +38,31 @@ def genius_lyrics(song_title, song_artist):
         return None
 
     except (HTTPError, Timeout) as e:
-        raise e
+        return None
 
 
 def az_lyrics(song_title, song_artist):
     print("AZ Lyrics")
-    azlyrics = AZlyrics(search_engine='duckduckgo', accuracy=0.6)
-    azlyrics.title = song_title
-    azlyrics.artist = song_artist
-
-    lyrics = azlyrics.getLyrics(save=False)
-
-    if lyrics != 0:
-        regex = re.compile("[\r\t]")
-        regex_headers = re.compile("[\[].*?[\]]")
-        lyrics = re.sub(regex, "", lyrics)
-        lyrics = re.sub(regex_headers, "", lyrics)
-        lyrics = lyrics.replace("\n", "\\n")
-        print("Found Lyrics!")
-        return lyrics
-    else:
+    try:
+        azlyrics = AZlyrics(search_engine='duckduckgo', accuracy=0.6)
+        azlyrics.title = song_title
+        azlyrics.artist = song_artist
+    
+        lyrics = azlyrics.getLyrics(save=False)
+    
+        if type(lyrics) == str:
+            regex = re.compile("[\r\t]")
+            regex_headers = re.compile("[\[].*?[\]]")
+            lyrics = re.sub(regex, "", lyrics)
+            lyrics = re.sub(regex_headers, "", lyrics)
+            lyrics = lyrics.replace("\n", "\\n")
+            print("Found Lyrics!")
+            return lyrics
+        else:
+            return None
+    except Exception as e:
+        print(type(e))
+        print(e.args)
         return None
 
 
