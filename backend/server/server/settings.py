@@ -21,16 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'j5^i+_%xal221dg^&*zx8u9u)xlxghi6h*6b#)2(qt=+3eir(e'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 local_test = []
 android_local = ['192.168.0.220', '127.0.0.1']
+prod_hosts = ['64.227.44.241', '109.255.33.40', '127.0.0.1']
 
 #ALLOWED_HOSTS = local_test
-ALLOWED_HOSTS = android_local
+ALLOWED_HOSTS = prod_hosts
 
 
 # Application definition
@@ -126,7 +127,7 @@ MANAGED_PROD_POSTGRE = {
 }
 
 
-DATABASES = DO_LOCAL_TEST_POSTGRE
+DATABASES = MANAGED_PROD_POSTGRE
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

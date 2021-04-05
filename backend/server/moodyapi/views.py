@@ -136,25 +136,24 @@ def analyze_playlist(request):
             new_track_moods = list(new_tracks_df["music mood"].values)
 
             # Create bulk insert for new classified songs
-            # new_tracks_inserts = []
-            # for i in range(len(new_track_ids)):
-            #    new_tracks_inserts.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
-            #                                             artists=new_track_artists[i], mood=new_track_moods[i]))
+            new_tracks_inserts = []
+            for i in range(len(new_track_ids)):
+                new_tracks_inserts.append(ClassifiedSong(song_id=new_track_ids[i], song_name=new_track_names[i],
+                                                         artists=new_track_artists[i], mood=new_track_moods[i]))
 
-            # ClassifiedSong.objects.bulk_create(new_tracks_inserts, ignore_conflicts=True)
+            ClassifiedSong.objects.bulk_create(new_tracks_inserts, ignore_conflicts=True)
 
             print(new_tracks_df[["name", "artists", "lyrics sentiment", "music mood"]])
             # print(new_tracks_df[["name", "artists", "music mood"]])
-            new_tracks_df.to_excel("C:\\Users\\rasen\\Documents\\spotify_angry.xlsx")
 
             if existing_tracks is not None:
                 print("Existing:\n", existing_tracks)
                 # Add the existing analysed songs to user_songs and new songs
-                # existing = list(existing_tracks["id"].values)
-                # existing.extend(new_track_ids)
+                existing = list(existing_tracks["id"].values)
+                existing.extend(new_track_ids)
                 # print(existing)
-                # current_user.user_songs.extend(existing)
-                # current_user.save()
+                current_user.user_songs.extend(existing)
+                current_user.save()
                 print("Added songs to database and user pool")
                 return_data = {
                     "error": "0",
@@ -163,8 +162,8 @@ def analyze_playlist(request):
                 }
             else:
                 # Add the newly analysed songs to user_songs
-                # current_user.user_songs.extend(new_track_ids)
-                # current_user.save()
+                current_user.user_songs.extend(new_track_ids)
+                current_user.save()
                 print("Added songs to database and user pool")
                 return_data = {
                     "error": "0",
@@ -179,9 +178,9 @@ def analyze_playlist(request):
             }
         # If songs don't need to be classified but need to be added to user
         elif (not is_empty) and (new_tracks_df is None) and (existing_tracks is not None):
-            # current_user_obj = User.objects.get(user_id=user_id)
-            # current_user_obj.user_songs.extend(existing_tracks["id"])
-            # current_user_obj.save()
+            current_user_obj = User.objects.get(user_id=user_id)
+            current_user_obj.user_songs.extend(existing_tracks["id"])
+            current_user_obj.save()
             return_data = {
                 "error": "0",
                 "message": "{} songs added to song pool"
@@ -196,6 +195,7 @@ def analyze_playlist(request):
             }
 
     except Exception as e:
+        print(type(e))
         print(e.args)
         return_data = {
             "error": "ANZ001",
